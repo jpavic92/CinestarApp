@@ -16,7 +16,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import javax.sql.DataSource;
@@ -63,7 +65,7 @@ public class SqlRepository implements Repository {
     private static final String SELECT_MOVIE_INVOLVEMENTS_BY_ROLEID = "{ CALL selectMovieInvolvementsByRoleId(?, ?) }";
     private static final String SELECT_INVOLVEMENTS = "{ CALL selectInvolvements() }";
 
-    private static final String CREATE_GENRE = "{ CALL createGenre (?) }";
+    private static final String CREATE_GENRE = "{ CALL createGenre (?, ?) }";
     private static final String SELECT_MOVIE_GENRES = "{ CALL selectMovieGenres(?) }";
     private static final String SELECT_GENRES = "{ CALL selectGenres() }";
     private static final String CREATE_MOVIEGENRE = "{ CALL createMovieGenre(?,?) }";
@@ -499,7 +501,7 @@ public class SqlRepository implements Repository {
                     stmt.setString(2, person.getLastName());
                     stmt.registerOutParameter(3, Types.INTEGER);
                     stmt.executeUpdate();
-                    person.setId(stmt.getInt(3)); //-> procedura vraća ID -> odmah povezati s objektom
+                    person.setId(stmt.getInt(3)); //-> procedura vraća ID -> dati ID objektu
                 }
             }
 
@@ -527,23 +529,40 @@ public class SqlRepository implements Repository {
                 }
             }
 
-            setInitalEntityRelations(con, movies);
+            setInitalEntityRelations(con, movies, persons, genres);
         }
     }
 
-    private void setInitalEntityRelations(Connection con, List<Movie> movies) throws SQLException {
+    private void setInitalEntityRelations(Connection con, List<Movie> movies, Set<Person> persons, Set<Genre> genres) throws SQLException {
+        
+        //put persons into HashMap for more efficient search
+        HashMap<Integer, Person> hmPersons = new HashMap<>();
+        
+        for (Person person : persons) {
+            hmPersons.put(Objects.hash(person.getFirstName(), person.getLastName()), person);
+        }
+        
         try (CallableStatement stmt = con.prepareCall(CREATE_MOVIE_INVOLVEMENT)) {
+                int personId;
+                Integer personHashKey;
+                
             for (Movie movie : movies) {
                 for (Person director : movie.getDirectors()) {
+                    personHashKey = Objects.hash(director.getFirstName(), director.getLastName());
+                    personId = hmPersons.get(personHashKey).getId();
+                    
                     stmt.setInt(1, movie.getId());
-                    stmt.setInt(2, director.getId());
+                    stmt.setInt(2, personId);
                     stmt.setInt(3, MovieRole.DIRECTOR.getRole());
                     stmt.executeUpdate();
                 }
 
                 for (Person actor : movie.getActors()) {
+                    personHashKey = Objects.hash(actor.getFirstName(), actor.getLastName());
+                    personId = hmPersons.get(personHashKey).getId();
+                    
                     stmt.setInt(1, movie.getId());
-                    stmt.setInt(2, actor.getId());
+                    stmt.setInt(2, personId);
                     stmt.setInt(3, MovieRole.ACTOR.getRole());
                     stmt.executeUpdate();
                 }
@@ -551,14 +570,25 @@ public class SqlRepository implements Repository {
         }
 
         try (CallableStatement stmt = con.prepareCall(CREATE_MOVIEGENRE)) {
+            int genreId;
+            
             for (Movie movie : movies) {
                 for (Genre genre : movie.getGenre()) {
+                    genreId = genres
+                            .stream()
+                            .filter(g -> g.equals(genre))
+                            .findAny()
+                            .get()
+                            .getId();
+                    
                     stmt.setInt(1, movie.getId());
-                    stmt.setInt(2, genre.getId());
+                    stmt.setInt(2, genreId);
                     stmt.executeUpdate();
                 }
             }
         }
     }
+    
+    
 
 }
