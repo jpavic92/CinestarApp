@@ -62,21 +62,16 @@ public class SqlRepository implements Repository {
 
     private static final String CREATE_MOVIE_INVOLVEMENT = "{ CALL createMovieInvolvement(?,?,?) }";
     private static final String DELETE_MOVIE_INVOLVEMENT = "{ CALL deleteMovieInvolvement(?,?,?) }";
-    private static final String SELECT_MOVIE_INVOLVEMENTS_BY_ROLEID = "{ CALL selectMovieInvolvementsByRoleId(?, ?) }";
-    private static final String SELECT_INVOLVEMENTS = "{ CALL selectInvolvements() }";
+    private static final String SELECT_MOVIE_INVOLVEMENTS_BY_ROLEID = "{ CALL selectMovieInvolvementsByRoleId(?, ?) }"; //fetch all directors or actors of specified movie
+    private static final String SELECT_INVOLVEMENTS = "{ CALL selectInvolvements() }"; //fetch all persons with involvements
 
     private static final String CREATE_GENRE = "{ CALL createGenre (?, ?) }";
     private static final String SELECT_MOVIE_GENRES = "{ CALL selectMovieGenres(?) }";
     private static final String SELECT_GENRES = "{ CALL selectGenres() }";
     private static final String CREATE_MOVIEGENRE = "{ CALL createMovieGenre(?,?) }";
-
-    private static final String SELECT_MOVIE_ACTORS = "{ CALL selectMovieActors(?) }";
-    private static final String SELECT_MOVIE_DIRECTORS = "{ CALL selectMovieDirectors(?) }";
-
-    private static final String SELECT_DIRECTORS = "{ CALL selectDirectors() }";
-    private static final String SELECT_ACTORS = "{ CALL selectActors() }";
-    //preuzeti samo movieROles pa po njima filtirati po moiveId i roleId?
-
+    
+    private static final String DELETE_ALL_DATA = "{ CALL deleteAllData () }";
+    
     //CRUD MOVIE
     @Override
     public int createMovie(Movie movie) throws Exception {
@@ -495,6 +490,12 @@ public class SqlRepository implements Repository {
         DataSource ds = DataSourceSingleton.getInstance();
 
         try (Connection con = ds.getConnection()) {
+            
+            //Before initial creation of entities and relations delete all previous data
+            try(CallableStatement stmt = con.prepareCall(DELETE_ALL_DATA)){
+                stmt.executeUpdate();
+            }
+            
             try (CallableStatement stmt = con.prepareCall(CREATE_PERSON)) {
                 for (Person person : persons) {
                     stmt.setString(1, person.getFirstName());
