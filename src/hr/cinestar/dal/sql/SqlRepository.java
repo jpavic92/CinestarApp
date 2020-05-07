@@ -547,43 +547,50 @@ public class SqlRepository implements Repository {
                 Integer personHashKey;
                 
             for (Movie movie : movies) {
-                for (Person director : movie.getDirectors()) {
-                    personHashKey = Objects.hash(director.getFirstName(), director.getLastName());
-                    personId = hmPersons.get(personHashKey).getId();
-                    
-                    stmt.setInt(1, movie.getId());
-                    stmt.setInt(2, personId);
-                    stmt.setInt(3, MovieRole.DIRECTOR.getRole());
-                    stmt.executeUpdate();
+                if (!movie.getDirectors().isEmpty()) {
+                    for (Person director : movie.getDirectors()) {
+                        personHashKey = Objects.hash(director.getFirstName(), director.getLastName());
+                        personId = hmPersons.get(personHashKey).getId();
+
+                        stmt.setInt(1, movie.getId());
+                        stmt.setInt(2, personId);
+                        stmt.setInt(3, MovieRole.DIRECTOR.getRole());
+                        stmt.executeUpdate();
+                    }
                 }
 
-                for (Person actor : movie.getActors()) {
-                    personHashKey = Objects.hash(actor.getFirstName(), actor.getLastName());
-                    personId = hmPersons.get(personHashKey).getId();
-                    
-                    stmt.setInt(1, movie.getId());
-                    stmt.setInt(2, personId);
-                    stmt.setInt(3, MovieRole.ACTOR.getRole());
-                    stmt.executeUpdate();
+                if (!movie.getActors().isEmpty()) {
+                    for (Person actor : movie.getActors()) {
+                        personHashKey = Objects.hash(actor.getFirstName(), actor.getLastName());
+                        personId = hmPersons.get(personHashKey).getId();
+                        
+                        stmt.setInt(1, movie.getId());
+                        stmt.setInt(2, personId);
+                        stmt.setInt(3, MovieRole.ACTOR.getRole());
+                        stmt.executeUpdate();
+                    }
                 }
             }
         }
 
+        //napraviti proceduru createMovieGenre!!
         try (CallableStatement stmt = con.prepareCall(CREATE_MOVIEGENRE)) {
             int genreId;
             
             for (Movie movie : movies) {
-                for (Genre genre : movie.getGenre()) {
-                    genreId = genres
-                            .stream()
-                            .filter(g -> g.equals(genre))
-                            .findAny()
-                            .get()
-                            .getId();
-                    
-                    stmt.setInt(1, movie.getId());
-                    stmt.setInt(2, genreId);
-                    stmt.executeUpdate();
+                if (!movie.getGenre().isEmpty()) {
+                    for (Genre genre : movie.getGenre()) {
+                        genreId = genres
+                                .stream()
+                                .filter(g -> g.equals(genre))
+                                .findAny()
+                                .get()
+                                .getId();
+                        
+                        stmt.setInt(1, movie.getId());
+                        stmt.setInt(2, genreId);
+                        stmt.executeUpdate();
+                    }
                 }
             }
         }

@@ -71,8 +71,6 @@ public class CinestarParser {
                     break;
             }
         }
-        
-        persons.forEach(p -> System.out.println(p.toString()));
         return persons;
     }
     
@@ -162,7 +160,6 @@ public class CinestarParser {
                                 break;
                             case REDATELJ:
                                 if (movie != null && !data.isEmpty()) {
-                                    //directors.clear();
                                     directors = new ArrayList<>();
                                     addPersons(directors, data);
                                     movie.setDirectors(directors);
@@ -170,7 +167,6 @@ public class CinestarParser {
                                 break;
                             case GLUMCI:
                                 if (movie != null && !data.isEmpty()) {
-                                    //actors.clear();
                                     actors = new ArrayList();
                                     addPersons(actors, data);
                                     movie.setActors(actors);
@@ -178,9 +174,9 @@ public class CinestarParser {
                                 break;
                             case ZANR:
                                 if (movie != null && !data.isEmpty()) {
-                                    //genres.clear();
                                     genres = new ArrayList<>();
                                     addGenres(genres, data);
+                                    movie.setGenre(genres);
                                 }
                                 break;
                             case PLAKAT:
