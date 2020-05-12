@@ -38,7 +38,7 @@ public class CinestarParser {
     
     private static final String DELIMITER = ",";
     private static final String DIR = "assets";
-    private static final String EXT = "jpg";
+    private static final String EXT = ".jpg";
     private static final Random RANDOM = new Random();
     
    
@@ -236,7 +236,7 @@ public class CinestarParser {
     }
 
     private static void handleImage(Movie movie, String imageUrl) throws IOException {
-        String ext = imageUrl.substring(imageUrl.lastIndexOf(".")+1);
+        String ext = imageUrl.substring(imageUrl.lastIndexOf("."));
         if (ext.length()> 4) {
             ext = EXT;
         }

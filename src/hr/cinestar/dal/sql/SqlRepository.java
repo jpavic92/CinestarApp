@@ -548,7 +548,7 @@ public class SqlRepository implements Repository {
                 Integer personHashKey;
                 
             for (Movie movie : movies) {
-                if (!movie.getDirectors().isEmpty()) {
+                if (movie.getDirectors() != null) {
                     for (Person director : movie.getDirectors()) {
                         personHashKey = Objects.hash(director.getFirstName(), director.getLastName());
                         personId = hmPersons.get(personHashKey).getId();
@@ -560,7 +560,7 @@ public class SqlRepository implements Repository {
                     }
                 }
 
-                if (!movie.getActors().isEmpty()) {
+                if (movie.getActors() != null) {
                     for (Person actor : movie.getActors()) {
                         personHashKey = Objects.hash(actor.getFirstName(), actor.getLastName());
                         personId = hmPersons.get(personHashKey).getId();
