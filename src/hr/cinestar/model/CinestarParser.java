@@ -7,6 +7,8 @@ package hr.cinestar.model;
 
 import hr.algebra.factory.ParserFactory;
 import hr.algebra.factory.UrlConnectionFactory;
+import hr.algebra.utils.FileUtils;
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
@@ -15,6 +17,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
@@ -34,6 +37,11 @@ public class CinestarParser {
     private static final int TIMEOUT = 10000;
     
     private static final String DELIMITER = ",";
+    private static final String DIR = "assets";
+    private static final String EXT = "jpg";
+    private static final Random RANDOM = new Random();
+    
+   
     
     
 
@@ -181,7 +189,8 @@ public class CinestarParser {
                                 break;
                             case PLAKAT:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setPosterPath(data);
+                                    handleImage(movie, data);
+                                    //movie.setPosterPath(data);
                                 }
                                 break;
                             case LINK:
@@ -224,6 +233,19 @@ public class CinestarParser {
         for (String genre : string) {
             genres.add(new Genre(genre.trim().toLowerCase()));
         }
+    }
+
+    private static void handleImage(Movie movie, String imageUrl) throws IOException {
+        String ext = imageUrl.substring(imageUrl.lastIndexOf(".")+1);
+        if (ext.length()> 4) {
+            ext = EXT;
+        }
+        
+        String imageName = Math.abs(RANDOM.nextInt()) + ext;
+        String localImagePath = DIR + File.separator + imageName;
+        
+        FileUtils.copyContentFromUrl(imageUrl, localImagePath);
+        movie.setPosterPath(localImagePath);
     }
        
     private enum TypeTag {
