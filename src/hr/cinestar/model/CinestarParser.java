@@ -39,6 +39,7 @@ public class CinestarParser {
     private static final String DELIMITER = ",";
     private static final String DIR = "assets";
     private static final String EXT = ".jpg";
+    private static final String PROTOCOL = "https";
     private static final Random RANDOM = new Random();
     
    
@@ -190,7 +191,6 @@ public class CinestarParser {
                             case PLAKAT:
                                 if (movie != null && !data.isEmpty()) {
                                     handleImage(movie, data);
-                                    //movie.setPosterPath(data);
                                 }
                                 break;
                             case LINK:
@@ -237,14 +237,16 @@ public class CinestarParser {
 
     private static void handleImage(Movie movie, String imageUrl) throws IOException {
         String ext = imageUrl.substring(imageUrl.lastIndexOf("."));
-        if (ext.length()> 4) {
+        String protocol = imageUrl.substring(0, imageUrl.indexOf(":"));
+        
+        if (ext.length() > 4) {
             ext = EXT;
         }
         
         String imageName = Math.abs(RANDOM.nextInt()) + ext;
         String localImagePath = DIR + File.separator + imageName;
         
-        FileUtils.copyContentFromUrl(imageUrl, localImagePath);
+        FileUtils.copyContentFromUrl(protocol.equals("http") ? imageUrl.replace(protocol, PROTOCOL) : imageUrl, localImagePath);
         movie.setPosterPath(localImagePath);
     }
        
