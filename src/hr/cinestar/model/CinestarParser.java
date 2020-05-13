@@ -32,7 +32,7 @@ import javax.xml.stream.events.XMLEvent;
  */
 public class CinestarParser {
     
-    private static final String URL = "https://www.blitz-cinestar.hr/rss.aspx?najava=1";
+    private static final String URL = "https://www.blitz-cinestar.hr/rss.aspx?id=6&najava=1";
     private static final String METHOD = "GET";
     private static final int TIMEOUT = 10000;
     
@@ -159,7 +159,8 @@ public class CinestarParser {
                                 break;
                             case DESCRIPTION:
                                 if (movie != null && !data.isEmpty()) {
-                                    movie.setDescription(data.substring(data.indexOf(">") +1, data.lastIndexOf("<")));
+                                    String description = handleDescription(data);                                    
+                                    movie.setDescription(description);
                                 }
                                 break;
                             case ORIGNAZIV:
@@ -248,6 +249,19 @@ public class CinestarParser {
         
         FileUtils.copyContentFromUrl(protocol.equals("http") ? imageUrl.replace(protocol, PROTOCOL) : imageUrl, localImagePath);
         movie.setPosterPath(localImagePath);
+    }
+
+    private static String handleDescription(String data){
+        String desc = data;
+        try {
+            if (data.contains("<") || data.contains(">")) {
+                desc = data.substring(data.indexOf(">") + 1, data.lastIndexOf("<"));
+                handleDescription(desc);
+            }
+            return desc;
+        } catch (IndexOutOfBoundsException e) {
+            return "";
+        }
     }
        
     private enum TypeTag {
