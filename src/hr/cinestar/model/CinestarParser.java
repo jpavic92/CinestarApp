@@ -252,15 +252,20 @@ public class CinestarParser {
     }
 
     private static String handleDescription(String data){
+        //Rekurzija u slučaju ako se description nalazi omeđen s više html elemenata
+        //Try catch blok u slučaju ako je nešto u RSSu zabrljano. Npr ako nedostaje zatvarajući tag div elementa
+        
         String desc = data;
+        
         try {
             if (data.contains("<") || data.contains(">")) {
                 desc = data.substring(data.indexOf(">") + 1, data.lastIndexOf("<"));
                 handleDescription(desc);
             }
             return desc;
+            
         } catch (IndexOutOfBoundsException e) {
-            return "";
+            return data;
         }
     }
        

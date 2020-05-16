@@ -492,9 +492,9 @@ public class SqlRepository implements Repository {
         try (Connection con = ds.getConnection()) {
             
             //Before initial creation of entities and relations delete all previous data
-            /*try(CallableStatement stmt = con.prepareCall(DELETE_ALL_DATA)){
+            try(CallableStatement stmt = con.prepareCall(DELETE_ALL_DATA)){
             stmt.executeUpdate();
-            }*/
+            }
             
             try (CallableStatement stmt = con.prepareCall(CREATE_PERSON)) {
                 for (Person person : persons) {
