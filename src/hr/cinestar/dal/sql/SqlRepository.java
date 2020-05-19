@@ -159,7 +159,7 @@ public class SqlRepository implements Repository {
 
             directors = selectMovieInvolvementsByRole(id, MovieRole.DIRECTOR.getRole(), con);
             actors = selectMovieInvolvementsByRole(id, MovieRole.ACTOR.getRole(), con);
-            genres = selectMovieGenres(id, ds);
+            genres = selectMovieGenres(id, con);
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery();) {
@@ -199,7 +199,7 @@ public class SqlRepository implements Repository {
 
                 directors = selectMovieInvolvementsByRole(movieId, MovieRole.DIRECTOR.getRole(), con);
                 actors = selectMovieInvolvementsByRole(movieId, MovieRole.ACTOR.getRole(), con);
-                genres = selectMovieGenres(movieId, ds);
+                genres = selectMovieGenres(movieId, con);
 
                 movies.add(new Movie(
                         movieId,
@@ -334,13 +334,12 @@ public class SqlRepository implements Repository {
         }
     }
 
-    private List<Genre> selectMovieGenres(int MovieId, DataSource dataSource) throws SQLException {
+    private List<Genre> selectMovieGenres(int movieId, Connection con) throws SQLException {
         List<Genre> genres = new ArrayList<>();
 
-        try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_MOVIE_GENRES)) {
+        try (CallableStatement stmt = con.prepareCall(SELECT_MOVIE_GENRES)) {
 
-            stmt.setInt(1, MovieId);
+            stmt.setInt(1, movieId);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     genres.add(new Genre(rs.getInt(GENRE_ID), rs.getString(GENRE_NAME)));
