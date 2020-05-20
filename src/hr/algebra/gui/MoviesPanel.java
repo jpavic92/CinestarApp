@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
@@ -337,6 +338,7 @@ public class MoviesPanel extends javax.swing.JPanel {
         
         tfGenres.setText(setGenres());
         
+        handlePoster();
         
     }
 
@@ -385,5 +387,16 @@ public class MoviesPanel extends javax.swing.JPanel {
         }
         
         return sb.toString();
+    }
+
+    private void handlePoster() {
+        
+        try {
+            ImageIcon poster = IconUtils.createIcon(selectedMovie.getPosterPath(), lblPoster.getWidth(), lblPoster.getHeight());
+            lblPoster.setIcon(poster);
+        } catch (IOException ex) {
+            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to load poster");
+        }
     }
 }
