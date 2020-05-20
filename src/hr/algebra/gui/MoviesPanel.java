@@ -9,6 +9,7 @@ import hr.algebra.utils.IconUtils;
 import hr.algebra.utils.MessageUtils;
 import hr.cinestar.dal.Repository;
 import hr.cinestar.dal.RepositoryFactory;
+import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +68,6 @@ public class MoviesPanel extends javax.swing.JPanel {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        tfActors = new javax.swing.JTextField();
         tfDirectors = new javax.swing.JTextField();
         tfGenres = new javax.swing.JTextField();
         lblPoster = new javax.swing.JLabel();
@@ -78,6 +78,8 @@ public class MoviesPanel extends javax.swing.JPanel {
         cbFilterGenre = new javax.swing.JComboBox<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         taDescription = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        taActors = new javax.swing.JTextArea();
 
         tblMovies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -117,8 +119,6 @@ public class MoviesPanel extends javax.swing.JPanel {
 
         jLabel8.setText("Beginning date:");
 
-        tfActors.setEditable(false);
-
         tfDirectors.setEditable(false);
 
         tfGenres.setEditable(false);
@@ -138,6 +138,12 @@ public class MoviesPanel extends javax.swing.JPanel {
         taDescription.setRows(5);
         jScrollPane3.setViewportView(taDescription);
 
+        taActors.setEditable(false);
+        taActors.setColumns(20);
+        taActors.setLineWrap(true);
+        taActors.setRows(2);
+        jScrollPane2.setViewportView(taActors);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,17 +158,13 @@ public class MoviesPanel extends javax.swing.JPanel {
                     .addComponent(jLabel5)
                     .addComponent(tfDirectors, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel6)
                     .addComponent(tfGenres, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnGoTo, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                            .addComponent(jLabel3)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(tfOriginalTitle))
-                        .addComponent(tfActors, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 373, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tfOriginalTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(43, 43, 43)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -170,7 +172,11 @@ public class MoviesPanel extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -215,8 +221,8 @@ public class MoviesPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfActors, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tfDirectors, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -272,11 +278,12 @@ public class MoviesPanel extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblPoster;
+    private javax.swing.JTextArea taActors;
     private javax.swing.JTextArea taDescription;
     private javax.swing.JTable tblMovies;
-    private javax.swing.JTextField tfActors;
     private javax.swing.JTextField tfBeginningDate;
     private javax.swing.JTextField tfDirectors;
     private javax.swing.JTextField tfGenres;
@@ -314,14 +321,21 @@ public class MoviesPanel extends javax.swing.JPanel {
     }
 
     private void initTextFields() {
-        textFields = Arrays.asList(tfOriginalTitle, taDescription, tfActors, tfDirectors, tfGenres, tfBeginningDate);
+        textFields = Arrays.asList(tfOriginalTitle, taDescription, taActors, tfDirectors, tfGenres, tfBeginningDate);
     }
 
     private void fillForm() {
         tfOriginalTitle.setText(selectedMovie.getOriginalTitle());
-        taDescription.setText(selectedMovie.getDescription().trim());
+        taDescription.setText(selectedMovie.getDescription());
         tfBeginningDate.setText(Movie.DATE_FORMAT.format(selectedMovie.getBeginningDate()));
-        tfActors.setText(setActors());
+        
+        taActors.setText(setActors());
+        taActors.setCaretPosition(0);
+        
+        tfDirectors.setText(setDirectors());
+        taDescription.setCaretPosition(0);
+        
+        tfGenres.setText(setGenres());
         
         
     }
@@ -331,18 +345,45 @@ public class MoviesPanel extends javax.swing.JPanel {
         
         for (int i = 0; i < selectedMovie.getActors().size(); i++) {
             Person actor = selectedMovie.getActors().get(i);
-            if (i < selectedMovie.getActors().size() -1) {
+            if (i > 0 && i < selectedMovie.getActors().size() -1) {
                 sb.append(actor.getFirstName() + " " + actor.getLastName() + ", ");
             }
-            else{
+            else if(i == selectedMovie.getActors().size() -1){
                 sb.append(actor.getFirstName() + " " + actor.getLastName());
             }
         }
         return sb.toString().trim();
     }
-    
-     
 
-   
+    private String setDirectors() {
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 0; i < selectedMovie.getDirectors().size(); i++) {
+            Person director = selectedMovie.getDirectors().get(i);
+            if (i > 0 && i < selectedMovie.getActors().size() -1) {
+                sb.append(director.getFirstName() + " " + director.getLastName() + ", ");
+            }
+            else if (i == selectedMovie.getDirectors().size() -1){
+                sb.append(director.getFirstName() + " " + director.getLastName());
+            }
+        }
+        return sb.toString().trim();
+    }
 
+    private String setGenres() {
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 0; i < selectedMovie.getGenre().size(); i++) {
+            Genre genre = selectedMovie.getGenre().get(i);
+            
+            if (i > 0 && i < selectedMovie.getGenre().size() -1) {
+                sb.append(genre.getName() + ", ");
+            }
+            else if(i == selectedMovie.getGenre().size() -1) {
+                sb.append(genre.getName());
+            }
+        }
+        
+        return sb.toString();
+    }
 }

@@ -259,7 +259,7 @@ public class CinestarParser {
         
         try {
             if (data.contains("<") || data.contains(">")) {
-                desc = data.substring(data.indexOf(">") + 1, data.lastIndexOf("<"));
+                desc = data.substring(data.indexOf(">") + 1, data.lastIndexOf("<")).trim();
                 return handleDescription(desc);
             }
             return data;
