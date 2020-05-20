@@ -4,7 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[830, 800]"/>
+      <Dimension value="[900, 800]"/>
     </Property>
   </Properties>
   <SyntheticProperties>
@@ -26,12 +26,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="tbContent" alignment="0" pref="810" max="32767" attributes="0"/>
+          <Component id="tbContent" alignment="0" pref="900" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="tbContent" alignment="0" pref="720" max="32767" attributes="0"/>
+          <Component id="tbContent" alignment="0" pref="750" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
