@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import hr.cinestar.model.MovieTableModel;
+import hr.cinestar.model.Person;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -317,7 +319,26 @@ public class MoviesPanel extends javax.swing.JPanel {
 
     private void fillForm() {
         tfOriginalTitle.setText(selectedMovie.getOriginalTitle());
-        taDescription.setText(selectedMovie.getDescription());
+        taDescription.setText(selectedMovie.getDescription().trim());
+        tfBeginningDate.setText(Movie.DATE_FORMAT.format(selectedMovie.getBeginningDate()));
+        tfActors.setText(setActors());
+        
+        
+    }
+
+    private String setActors() {
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 0; i < selectedMovie.getActors().size(); i++) {
+            Person actor = selectedMovie.getActors().get(i);
+            if (i < selectedMovie.getActors().size() -1) {
+                sb.append(actor.getFirstName() + " " + actor.getLastName() + ", ");
+            }
+            else{
+                sb.append(actor.getFirstName() + " " + actor.getLastName());
+            }
+        }
+        return sb.toString().trim();
     }
     
      
