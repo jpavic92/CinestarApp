@@ -308,17 +308,18 @@ public class MoviesPanel extends javax.swing.JPanel {
         if (cbFilterGenre.getSelectedIndex() != 0 && evt.getStateChange() == ItemEvent.SELECTED) {
             filteredMovies = new ArrayList();
             Genre selectedGenre = (Genre)evt.getItem();
-            filteredMovies.addAll(movies.stream()
-                    .filter(movie -> movie.getGenre()
-                            .contains(selectedGenre))
-                            .collect(Collectors
-                            .toList()));
+            /*filteredMovies.addAll(movies.stream()
+            .filter(movie -> movie.getGenre()
+            .contains(selectedGenre))
+            .collect(Collectors
+            .toList()));*/
             
-            /*  for (Movie movie : movies) {
-            if (movie.getGenre().contains(selectedGenre)) {
-            filteredMovies.add(movie);
+            for (Movie movie : movies) {
+                if (movie.getGenre().contains(selectedGenre)) {
+                    filteredMovies.add(movie);
+                }
             }
-            }*/
+            
             movieModel.setMovies(filteredMovies);
         }
         else{
@@ -414,10 +415,10 @@ public class MoviesPanel extends javax.swing.JPanel {
         
         for (int i = 0; i < selectedMovie.getActors().size(); i++) {
             Person actor = selectedMovie.getActors().get(i);
-            if (i > 0 && i < selectedMovie.getActors().size() -1) {
+            if (i == selectedMovie.getDirectors().size() -1 && i < selectedMovie.getActors().size() -1) {
                 sb.append(actor.getFirstName() + " " + actor.getLastName() + ", ");
             }
-            else if(i == selectedMovie.getActors().size() -1){
+            else{
                 sb.append(actor.getFirstName() + " " + actor.getLastName());
             }
         }
@@ -429,10 +430,10 @@ public class MoviesPanel extends javax.swing.JPanel {
         
         for (int i = 0; i < selectedMovie.getDirectors().size(); i++) {
             Person director = selectedMovie.getDirectors().get(i);
-            if (i > 0 && i < selectedMovie.getActors().size() -1) {
+            if (i == selectedMovie.getDirectors().size() -1 && i < selectedMovie.getActors().size() -1) {
                 sb.append(director.getFirstName() + " " + director.getLastName() + ", ");
             }
-            else if (i == selectedMovie.getDirectors().size() -1){
+            else{
                 sb.append(director.getFirstName() + " " + director.getLastName());
             }
         }
@@ -445,10 +446,10 @@ public class MoviesPanel extends javax.swing.JPanel {
         for (int i = 0; i < selectedMovie.getGenre().size(); i++) {
             Genre genre = selectedMovie.getGenre().get(i);
             
-            if (i > 0 && i < selectedMovie.getGenre().size() -1) {
+            if (i != selectedMovie.getGenre().size() -1 && i < selectedMovie.getGenre().size() -1) {
                 sb.append(genre.getName() + ", ");
             }
-            else if(i == selectedMovie.getGenre().size() -1) {
+            else {
                 sb.append(genre.getName());
             }
         }
