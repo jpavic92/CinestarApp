@@ -23,9 +23,12 @@ import java.awt.event.ItemEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
@@ -40,7 +43,7 @@ public class MoviesPanel extends javax.swing.JPanel {
     
     private static final String DEFAULT_POSTER_PATH = "/assets/fimlstrip.jpg";
     private Repository repo;
-    private MovieTableModel model;
+    private MovieTableModel movieModel;
     
     private List<Movie> movies;
     private List<JTextComponent> textFields;
@@ -298,10 +301,28 @@ public class MoviesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnGoToActionPerformed
 
     private void cbFilterGenreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbFilterGenreItemStateChanged
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
+        if (evt.getStateChange() == ItemEvent.DESELECTED) {
+            return;
+        }
+        List<Movie> filteredMovies = null;
+        if (cbFilterGenre.getSelectedIndex() != 0 && evt.getStateChange() == ItemEvent.SELECTED) {
+            filteredMovies = new ArrayList();
             Genre selectedGenre = (Genre)evt.getItem();
+            filteredMovies.addAll(movies.stream()
+                    .filter(movie -> movie.getGenre()
+                            .contains(selectedGenre))
+                            .collect(Collectors
+                            .toList()));
             
-            
+            /*  for (Movie movie : movies) {
+            if (movie.getGenre().contains(selectedGenre)) {
+            filteredMovies.add(movie);
+            }
+            }*/
+            movieModel.setMovies(filteredMovies);
+        }
+        else{
+            movieModel.setMovies(movies);
         }
     }//GEN-LAST:event_cbFilterGenreItemStateChanged
 
@@ -337,6 +358,7 @@ public class MoviesPanel extends javax.swing.JPanel {
         try {
             initTextFields();
             initRepo();
+            movies = repo.selectMovies();
             initTable();
             initFilter();
         } catch (Exception ex) {
@@ -346,17 +368,16 @@ public class MoviesPanel extends javax.swing.JPanel {
         }
     }
 
-    private void initRepo() {
+    private void initRepo() throws Exception {
         repo = RepositoryFactory.getRepository();
-        movies = repo.selectMovies();
     }
 
-    private void initTable() throws Exception {
+    private void initTable(){
         tblMovies.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblMovies.setRowHeight(25);
         tblMovies.setAutoCreateRowSorter(true);
-        model = new MovieTableModel(movies);
-        tblMovies.setModel(model);
+        movieModel = new MovieTableModel(movies);
+        tblMovies.setModel(movieModel);
     }
 
     private void clearForm() {

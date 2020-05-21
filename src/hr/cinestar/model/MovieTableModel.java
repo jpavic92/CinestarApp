@@ -48,6 +48,19 @@ public class MovieTableModel extends AbstractTableModel  {
         return COLUMNS[i];
     }
     
+    public void clearModel(){
+        int rows = getRowCount();
+        if (rows == 0) {
+            return;
+        }
+        
+        movies.clear();
+    }
     
+    public void setMovies(List<Movie> movies){
+        //this.movies.clear();
+        this.movies = movies;
+        fireTableDataChanged();
+    }
     
 }
