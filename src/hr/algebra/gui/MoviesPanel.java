@@ -291,7 +291,12 @@ public class MoviesPanel extends javax.swing.JPanel {
             Optional<Movie> optMovie = repo.selectMovie(movieId);
             selectedMovie = optMovie.get();
             fillForm();
-        } catch (Exception e) {
+        }
+        catch(IOException e){
+            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, e);
+            MessageUtils.showErrorMessage("Error", "Unable to load poster");
+        }
+        catch (Exception e) {
             Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, e);
             MessageUtils.showErrorMessage("Error", "Unable to show movie");
         }
@@ -432,7 +437,7 @@ public class MoviesPanel extends javax.swing.JPanel {
         taDescription.setWrapStyleWord(true);
     }
 
-    private void fillForm() {
+    private void fillForm() throws IOException {
         tfOriginalTitle.setText(selectedMovie.getOriginalTitle());
         taDescription.setText(selectedMovie.getDescription());
         tfBeginningDate.setText(Movie.DATE_FORMAT.format(selectedMovie.getBeginningDate()));
@@ -455,11 +460,12 @@ public class MoviesPanel extends javax.swing.JPanel {
         
         for (int i = 0; i < selectedMovie.getActors().size(); i++) {
             Person actor = selectedMovie.getActors().get(i);
-            if (i == selectedMovie.getDirectors().size() -1 && i < selectedMovie.getActors().size() -1) {
-                sb.append(actor.getFirstName() + " " + actor.getLastName() + ", ");
+            
+            if (i == selectedMovie.getActors().size() - 1) {
+                sb.append(actor.getFirstName() + " " + actor.getLastName());
             }
             else{
-                sb.append(actor.getFirstName() + " " + actor.getLastName());
+                sb.append(actor.getFirstName() + " " + actor.getLastName() + ", ");
             }
         }
         return sb.toString().trim();
@@ -470,11 +476,11 @@ public class MoviesPanel extends javax.swing.JPanel {
         
         for (int i = 0; i < selectedMovie.getDirectors().size(); i++) {
             Person director = selectedMovie.getDirectors().get(i);
-            if (i == selectedMovie.getDirectors().size() -1 && i < selectedMovie.getActors().size() -1) {
-                sb.append(director.getFirstName() + " " + director.getLastName() + ", ");
+            if (i == selectedMovie.getDirectors().size() - 1) {
+                sb.append(director.getFirstName() + " " + director.getLastName());
             }
             else{
-                sb.append(director.getFirstName() + " " + director.getLastName());
+                sb.append(director.getFirstName() + " " + director.getLastName() + ", ");
             }
         }
         return sb.toString().trim();
@@ -486,26 +492,23 @@ public class MoviesPanel extends javax.swing.JPanel {
         for (int i = 0; i < selectedMovie.getGenre().size(); i++) {
             Genre genre = selectedMovie.getGenre().get(i);
             
-            if (i != selectedMovie.getGenre().size() -1 && i < selectedMovie.getGenre().size() -1) {
-                sb.append(genre.getName() + ", ");
-            }
-            else {
+           if (i == selectedMovie.getGenre().size() - 1) {
                 sb.append(genre.getName());
+            }
+            else{
+                sb.append(genre.getName() + ", ");
             }
         }
         
         return sb.toString();
     }
 
-    private void handlePoster() {
+    private void handlePoster() throws IOException {
         
-        try {
-            ImageIcon poster = IconUtils.createIcon(selectedMovie.getPosterPath(), lblPoster.getWidth(), lblPoster.getHeight());
-            lblPoster.setIcon(poster);
-        } catch (IOException ex) {
-            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage("Error", "Unable to load poster");
-        }
+       
+        ImageIcon poster = IconUtils.createIcon(selectedMovie.getPosterPath(), lblPoster.getWidth(), lblPoster.getHeight());
+        lblPoster.setIcon(poster);
+        
     }
 
     private void initFilter() throws Exception {
