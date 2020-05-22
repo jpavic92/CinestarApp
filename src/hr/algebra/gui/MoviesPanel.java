@@ -114,6 +114,11 @@ public class MoviesPanel extends javax.swing.JPanel {
         btnUpdate.setText("Update movie");
 
         btnDelete.setText("Delete movie");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         btnAdd.setText("Add movie");
 
@@ -287,12 +292,17 @@ public class MoviesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_tblMoviesMouseReleased
 
     private void btnGoToActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoToActionPerformed
+        if (selectedMovie == null) {
+            MessageUtils.showInformationMessage("No movie selected", "Please select a movie");
+            return;
+        }
+        
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             try {
                 Desktop.getDesktop().browse(new URI(selectedMovie.getLink()));
             } catch (URISyntaxException ex) {
                 Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
-                MessageUtils.showErrorMessage("Error", "Unable to browse URI");
+                MessageUtils.showErrorMessage("Error", "Incorrect url adress");
             } catch (IOException ex) {
                 Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
                 MessageUtils.showErrorMessage("Error", "Unable to browse URI");
@@ -308,17 +318,11 @@ public class MoviesPanel extends javax.swing.JPanel {
         if (cbFilterGenre.getSelectedIndex() != 0 && evt.getStateChange() == ItemEvent.SELECTED) {
             filteredMovies = new ArrayList();
             Genre selectedGenre = (Genre)evt.getItem();
-            /*filteredMovies.addAll(movies.stream()
+            filteredMovies.addAll(movies.stream()
             .filter(movie -> movie.getGenre()
             .contains(selectedGenre))
             .collect(Collectors
-            .toList()));*/
-            
-            for (Movie movie : movies) {
-                if (movie.getGenre().contains(selectedGenre)) {
-                    filteredMovies.add(movie);
-                }
-            }
+            .toList()));
             
             movieModel.setMovies(filteredMovies);
         }
@@ -326,6 +330,31 @@ public class MoviesPanel extends javax.swing.JPanel {
             movieModel.setMovies(movies);
         }
     }//GEN-LAST:event_cbFilterGenreItemStateChanged
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        if (selectedMovie == null) {
+            MessageUtils.showInformationMessage("No movie selected", "Please select a movie");
+            return;
+        }
+        
+        try {
+            repo.deleteMovie(selectedMovie.getId());
+            movies = repo.selectMovies();
+            movieModel.setMovies(movies);
+            
+            File posterFile = new File(selectedMovie.getPosterPath());
+            
+            if (posterFile.delete()) {
+                MessageUtils.showInformationMessage("Success", "Selected movie has been deleted");
+            }
+            
+            clearForm();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to delete the movie");
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -383,6 +412,7 @@ public class MoviesPanel extends javax.swing.JPanel {
 
     private void clearForm() {
         textFields.forEach(field -> field.setText(""));
+        selectedMovie = null;
         //set default icon
         
     }
