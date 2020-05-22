@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
@@ -121,6 +122,11 @@ public class MoviesPanel extends javax.swing.JPanel {
         });
 
         btnAdd.setText("Add movie");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         lblTitle.setFont(new java.awt.Font("Segoe UI Semilight", 1, 16)); // NOI18N
         lblTitle.setForeground(new java.awt.Color(153, 0, 0));
@@ -355,6 +361,10 @@ public class MoviesPanel extends javax.swing.JPanel {
             MessageUtils.showErrorMessage("Error", "Unable to delete the movie");
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        new EditMoviesDialog((JFrame)this.getRootPane().getParent() , true).setVisible(true);
+    }//GEN-LAST:event_btnAddActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
