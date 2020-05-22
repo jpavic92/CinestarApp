@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -113,6 +114,11 @@ public class MoviesPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(tblMovies);
 
         btnUpdate.setText("Update movie");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
 
         btnDelete.setText("Delete movie");
         btnDelete.addActionListener(new java.awt.event.ActionListener() {
@@ -292,10 +298,6 @@ public class MoviesPanel extends javax.swing.JPanel {
             selectedMovie = optMovie.get();
             fillForm();
         }
-        catch(IOException e){
-            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, e);
-            MessageUtils.showErrorMessage("Error", "Unable to load poster");
-        }
         catch (Exception e) {
             Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, e);
             MessageUtils.showErrorMessage("Error", "Unable to show movie");
@@ -368,8 +370,24 @@ public class MoviesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        new EditMoviesDialog((JFrame)this.getRootPane().getParent() , true).setVisible(true);
+        new EditMoviesDialog(
+                (JFrame)this.getRootPane().getParent(), 
+                true, 
+                EditMoviesDialog.EditMovieDialogMode.ADD_MOVIE)
+                .setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        if (selectedMovie == null) {
+            MessageUtils.showInformationMessage("No movie selected", "Please select a movie");
+            return;
+        }
+        new EditMoviesDialog(
+                (JFrame)this.getRootPane().getParent(), 
+                true, 
+                EditMoviesDialog.EditMovieDialogMode.EDIT_MOVIE, selectedMovie)
+                .setVisible(true);
+    }//GEN-LAST:event_btnUpdateActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -507,7 +525,11 @@ public class MoviesPanel extends javax.swing.JPanel {
         
        
         ImageIcon poster = IconUtils.createIcon(selectedMovie.getPosterPath(), lblPoster.getWidth(), lblPoster.getHeight());
-        lblPoster.setIcon(poster);
+        try {
+            lblPoster.setIcon(poster);
+        } catch (Exception e) {
+            //set CORRUPTED DATA image
+        }
         
     }
 

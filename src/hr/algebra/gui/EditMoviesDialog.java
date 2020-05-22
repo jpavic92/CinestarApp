@@ -5,21 +5,35 @@
  */
 package hr.algebra.gui;
 
+import hr.cinestar.model.Movie;
+
 /**
  *
  * @author Josip
  */
 public class EditMoviesDialog extends javax.swing.JDialog {
     
-    private static final String ADD_MOVIE = "Add a movie";
-    private static final String EDIT_MOVIE = "Edit a movie";
+    private static final String ADD_MOVIE_TITLE = "Add movie";
+    private static final String EDIT_MOVIE_TITLE = "Edit movie";
+    private static EditMovieDialogMode mode;
+    private Movie selectedMovie;
 
     /**
      * Creates new form EditMoviesDialog
      */
-    public EditMoviesDialog(java.awt.Frame parent, boolean modal) {
+    public EditMoviesDialog(java.awt.Frame parent, boolean modal, EditMovieDialogMode mode) {
         super(parent, modal);
         initComponents();
+        this.mode = mode;
+        init();
+    }
+    
+     public EditMoviesDialog(java.awt.Frame parent, boolean modal, EditMovieDialogMode mode, Movie movie) {
+        super(parent, modal);
+        initComponents();
+        this.mode = mode;
+        selectedMovie = movie;
+        init();
     }
 
     /**
@@ -36,8 +50,8 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList<>();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        tfOriginalTitle = new javax.swing.JTextField();
+        tfTitle = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList<>();
         jLabel3 = new javax.swing.JLabel();
@@ -49,15 +63,15 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         jLabel9 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        taDescription = new javax.swing.JTextArea();
         jLabel7 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        tfLink = new javax.swing.JTextField();
+        btnSubmit = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jLabel10 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        tfPosterPath = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -104,13 +118,13 @@ public class EditMoviesDialog extends javax.swing.JDialog {
 
         jLabel6.setText("Description:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane5.setViewportView(jTextArea1);
+        taDescription.setColumns(20);
+        taDescription.setRows(5);
+        jScrollPane5.setViewportView(taDescription);
 
         jLabel7.setText("Web link:");
 
-        jButton1.setText("jButton1");
+        btnSubmit.setText("jButton1");
 
         jButton2.setText("Remove");
 
@@ -147,8 +161,8 @@ public class EditMoviesDialog extends javax.swing.JDialog {
                                     .addGap(83, 83, 83)
                                     .addComponent(jLabel2))
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
-                                .addComponent(jTextField1)
-                                .addComponent(jTextField2)
+                                .addComponent(tfOriginalTitle)
+                                .addComponent(tfTitle)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(jLabel1)
                                     .addGap(129, 129, 129))
@@ -160,8 +174,8 @@ public class EditMoviesDialog extends javax.swing.JDialog {
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(88, 88, 88)
                                         .addComponent(jLabel7))
-                                    .addComponent(jTextField3)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(tfLink)
+                                    .addComponent(tfPosterPath, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(jButton5)
                                     .addGap(72, 72, 72))))
@@ -179,7 +193,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
                         .addGap(78, 78, 78))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton4))
                         .addGap(20, 20, 20))))
         );
@@ -193,11 +207,11 @@ public class EditMoviesDialog extends javax.swing.JDialog {
                             .addComponent(jLabel1)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(23, 23, 23)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(tfTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tfOriginalTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -205,11 +219,11 @@ public class EditMoviesDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tfLink, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tfPosterPath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5))
                     .addGroup(layout.createSequentialGroup()
@@ -240,7 +254,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton4)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSubmit, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22))
         );
 
@@ -248,50 +262,41 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(EditMoviesDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(EditMoviesDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(EditMoviesDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(EditMoviesDialog.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void init() {
+        switch(mode){
+            case ADD_MOVIE:
+                this.setTitle(ADD_MOVIE_TITLE);
+                btnSubmit.setText(ADD_MOVIE_TITLE);
+                break;
+            case EDIT_MOVIE:
+                this.setTitle(EDIT_MOVIE_TITLE);
+                btnSubmit.setText(EDIT_MOVIE_TITLE);
+                fillForm();
+                break;
         }
-        //</editor-fold>
+    }
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                EditMoviesDialog dialog = new EditMoviesDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
+    private void fillForm() {
+        tfTitle.setText(selectedMovie.getTitle());
+        tfOriginalTitle.setText(selectedMovie.getOriginalTitle());
+        taDescription.setText(selectedMovie.getDescription());
+        tfLink.setText(selectedMovie.getLink());
+        tfPosterPath.setText(selectedMovie.getPosterPath());
+    }
+    
+    public enum EditMovieDialogMode{
+        ADD_MOVIE (1),
+        EDIT_MOVIE (2);
+
+        private final int mode;
+
+        private EditMovieDialogMode(int mode){
+            this.mode = mode;
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -314,10 +319,10 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextArea taDescription;
+    private javax.swing.JTextField tfLink;
+    private javax.swing.JTextField tfOriginalTitle;
+    private javax.swing.JTextField tfPosterPath;
+    private javax.swing.JTextField tfTitle;
     // End of variables declaration//GEN-END:variables
 }
