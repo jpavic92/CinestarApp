@@ -13,16 +13,13 @@ import java.awt.Dimension;
  *
  * @author Josip
  */
-public class TestContainer extends javax.swing.JFrame implements MovieForm{
-    
-    private Repository repo;
+public class TestContainer extends javax.swing.JFrame{
 
     /**
      * Creates new form TestContainer
      */
     public TestContainer() {
         initComponents();
-        initRepo();
         setupPanels();
     }
 
@@ -93,13 +90,6 @@ public class TestContainer extends javax.swing.JFrame implements MovieForm{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
 
-    private void initRepo() {
-        repo = RepositoryFactory.getRepository();
-    }
-    
-    public Repository getRepo(){
-        return repo;
-    }
     
     private void setupPanels() {
         //tbContent.add("Cinestar movies", new MoviesPanel());
@@ -107,8 +97,4 @@ public class TestContainer extends javax.swing.JFrame implements MovieForm{
         mp.setSize(new Dimension(this.getWidth(), this.getHeight() - 30));
         this.add("Cinestar movies", mp);
     }
-}
-
-interface MovieForm{
-    public Repository getRepo();
 }

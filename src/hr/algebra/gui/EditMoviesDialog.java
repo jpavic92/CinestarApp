@@ -5,11 +5,16 @@
  */
 package hr.algebra.gui;
 
+import hr.algebra.utils.FileUtils;
+import hr.algebra.utils.IconUtils;
 import hr.algebra.utils.MessageUtils;
+import hr.algebra.utils.UrlUtils;
 import hr.cinestar.dal.Repository;
 import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
 import hr.cinestar.model.Person;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +22,9 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
 import javax.swing.JLabel;
+import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -50,6 +57,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     
     //napraviti DnD - provjeriti vjezbe 11
     //napraviti popup za genre
+
 
     /**
      * Creates new form EditMoviesDialog
@@ -155,6 +163,10 @@ public class EditMoviesDialog extends javax.swing.JDialog {
 
         jLabel7.setText("Web link:");
 
+        tfLink.setName("Link"); // NOI18N
+
+        btnSubmit.setBackground(new java.awt.Color(0, 153, 0));
+        btnSubmit.setForeground(new java.awt.Color(255, 255, 255));
         btnSubmit.setText("Submit");
         btnSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -171,6 +183,11 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         jLabel10.setText("Poster path:");
 
         btnChooseImage.setText("Choose image");
+        btnChooseImage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChooseImageActionPerformed(evt);
+            }
+        });
 
         lblTitleError.setForeground(new java.awt.Color(255, 0, 0));
 
@@ -366,12 +383,25 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         //addOrUpdate();
     }//GEN-LAST:event_btnSubmitActionPerformed
 
+    private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
+        File file = FileUtils.uploadFile("Upload image", "jpg", "jpeg", "png");
+        
+        try {
+            IconUtils.createIcon(file.getAbsolutePath(), 100, 100);
+            tfPosterPath.setText(file.getAbsolutePath());
+            lblPosterPathError.setText("");
+        } catch (Exception ex) {
+            Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
+            lblPosterPathError.setText("X");
+            MessageUtils.showErrorMessage("Corrupted file", "Unable to load choosen file");
+        }
+    }//GEN-LAST:event_btnChooseImageActionPerformed
+
     private void init() {
-        
-        
         try {
             initForm();
             initValidation();
+            initDragNDrop();
             initAllPersonsList();
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -424,30 +454,6 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         lsPersons.setModel(allPersonsModel);
     }
 
-    /*private void setAddMode() {
-    btnSubmit.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-    CreateMovie();
-    }
-    });
-    }
-    
-    private void CreateMovie() {
-    if (formValid()) {
-    
-    }
-    }
-    
-    private void setUpdateMode() {
-    btnSubmit.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent ae) {
-    UpdateMovie();
-    }
-    });
-    }*/
-
     private void initValidation() {
         validationsFields = Arrays.asList(tfTitle, tfOriginalTitle, taDescription, tfLink, tfPosterPath, tfDate);
         fieldErrorLabels = Arrays.asList(lblTitleError, lblOriginalTitleError, lblDescriptionError, lblLinkError, lblPosterPathError, lblDateError);
@@ -460,9 +466,9 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         boolean ok = true;
         for (int i = 0; i < validationsFields.size(); i++) {
             ok &= !validationsFields.get(i).getText().isEmpty();
-            validationsFields.get(i).setText(validationsFields.get(i).getText().isEmpty() ? "X" : "");
+            fieldErrorLabels.get(i).setText(validationsFields.get(i).getText().isEmpty() ? "X" : "");
             
-            if (validationsFields.get(i).getName().equals("Date")) {
+            if ("Date".equals(validationsFields.get(i).getName())) {
                 try {
                     Movie.DATE_FORMAT.parse(tfDate.getText().trim());
                     lblDateError.setText("");
@@ -470,6 +476,10 @@ public class EditMoviesDialog extends javax.swing.JDialog {
                     ok &= false;
                     lblDateError.setText("X");
                 }
+            }
+           else if("Link".equals(validationsFields.get(i).getName())){
+            ok &= UrlUtils.UrlIsValid(tfLink.getText().trim());
+            lblLinkError.setText(UrlUtils.UrlIsValid(tfLink.getText()) ? "" : "X");
             }
         }
         
@@ -521,6 +531,19 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     private javax.swing.JTextField tfPosterPath;
     private javax.swing.JTextField tfTitle;
     // End of variables declaration//GEN-END:variables
+
+    private void initDragNDrop() {
+        lsPersons.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        lsPersons.setDragEnabled(true);
+        
+        /*  lsPersons.setTransferHandler(new ExportTransferHandler());
+        
+        lsDirectors.setDropMode(DropMode.ON);
+        lsActors.setDropMode(DropMode.ON);
+        
+        lsDirectors.setTransferHandler(new ImportTransferHandler());
+        lsActors.setTransferHandler(new ImportTransferHandler());*/
+    }
 
    
 }

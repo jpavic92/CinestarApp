@@ -351,9 +351,18 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="tfLink">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="Link" noResource="true"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="btnSubmit">
       <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="0" green="99" red="0" type="rgb"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Submit"/>
       </Properties>
       <Events>
@@ -386,6 +395,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Choose image"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnChooseImageActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblTitleError">
       <Properties>

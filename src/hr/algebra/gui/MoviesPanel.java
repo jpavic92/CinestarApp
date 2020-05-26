@@ -421,11 +421,7 @@ public class MoviesPanel extends javax.swing.JPanel{
     }
 
     private void initRepo() throws Exception {
-        MovieForm parent;
-        if (this.getParent() instanceof MovieForm) {
-            parent = (MovieForm)getParent();
-            repo = parent.getRepo();
-        }   
+       repo = RepositoryFactory.getRepository();
     }
 
     private void initTable(){
