@@ -5,17 +5,24 @@
  */
 package hr.algebra.gui;
 
+import hr.cinestar.dal.Repository;
+import hr.cinestar.dal.RepositoryFactory;
+import java.awt.Dimension;
+
 /**
  *
  * @author Josip
  */
-public class TestContainer extends javax.swing.JFrame {
+public class TestContainer extends javax.swing.JFrame implements MovieForm{
+    
+    private Repository repo;
 
     /**
      * Creates new form TestContainer
      */
     public TestContainer() {
         initComponents();
+        initRepo();
         setupPanels();
     }
 
@@ -28,8 +35,6 @@ public class TestContainer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tbContent = new javax.swing.JTabbedPane();
-
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(915, 800));
 
@@ -37,11 +42,11 @@ public class TestContainer extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tbContent, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
+            .addGap(0, 900, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tbContent, javax.swing.GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
+            .addGap(0, 750, Short.MAX_VALUE)
         );
 
         pack();
@@ -86,10 +91,24 @@ public class TestContainer extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTabbedPane tbContent;
     // End of variables declaration//GEN-END:variables
 
-    private void setupPanels() {
-        tbContent.add("Cinestar movies", new MoviesPanel());
+    private void initRepo() {
+        repo = RepositoryFactory.getRepository();
     }
+    
+    public Repository getRepo(){
+        return repo;
+    }
+    
+    private void setupPanels() {
+        //tbContent.add("Cinestar movies", new MoviesPanel());
+        MoviesPanel mp = new MoviesPanel();
+        mp.setSize(new Dimension(this.getWidth(), this.getHeight() - 30));
+        this.add("Cinestar movies", mp);
+    }
+}
+
+interface MovieForm{
+    public Repository getRepo();
 }

@@ -17,23 +17,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import hr.cinestar.model.MovieTableModel;
 import hr.cinestar.model.Person;
-import java.awt.AWTEvent;
 import java.awt.Desktop;
 import java.awt.event.ItemEvent;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
 
@@ -41,7 +36,7 @@ import javax.swing.text.JTextComponent;
  *
  * @author Josip
  */
-public class MoviesPanel extends javax.swing.JPanel {
+public class MoviesPanel extends javax.swing.JPanel{
     
     private static final String DEFAULT_POSTER_PATH = "/assets/fimlstrip.jpg";
     private Repository repo;
@@ -370,10 +365,7 @@ public class MoviesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        new EditMoviesDialog(
-                (JFrame)this.getRootPane().getParent(), 
-                true, 
-                EditMoviesDialog.ADD_MODE)
+        new EditMoviesDialog((JFrame)this.getRootPane().getParent(), true, repo)
                 .setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -382,10 +374,7 @@ public class MoviesPanel extends javax.swing.JPanel {
             MessageUtils.showInformationMessage("No movie selected", "Please select a movie");
             return;
         }
-        new EditMoviesDialog(
-                (JFrame)this.getRootPane().getParent(), 
-                true, 
-                EditMoviesDialog.EDIT_MODE, selectedMovie)
+        new EditMoviesDialog((JFrame)this.getRootPane().getParent(), true, repo, selectedMovie)
                 .setVisible(true);
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -432,7 +421,11 @@ public class MoviesPanel extends javax.swing.JPanel {
     }
 
     private void initRepo() throws Exception {
-        repo = RepositoryFactory.getRepository();
+        MovieForm parent;
+        if (this.getParent() instanceof MovieForm) {
+            parent = (MovieForm)getParent();
+            repo = parent.getRepo();
+        }   
     }
 
     private void initTable(){
@@ -480,10 +473,15 @@ public class MoviesPanel extends javax.swing.JPanel {
             Person actor = selectedMovie.getActors().get(i);
             
             if (i == selectedMovie.getActors().size() - 1) {
-                sb.append(actor.getFirstName() + " " + actor.getLastName());
+                sb.append(actor.getFirstName());
+                sb.append(" ");
+                sb.append(actor.getLastName());
             }
             else{
-                sb.append(actor.getFirstName() + " " + actor.getLastName() + ", ");
+                sb.append(actor.getFirstName());
+                sb.append(" ");
+                sb.append(actor.getLastName());
+                sb.append(", ");
             }
         }
         return sb.toString().trim();
@@ -495,10 +493,15 @@ public class MoviesPanel extends javax.swing.JPanel {
         for (int i = 0; i < selectedMovie.getDirectors().size(); i++) {
             Person director = selectedMovie.getDirectors().get(i);
             if (i == selectedMovie.getDirectors().size() - 1) {
-                sb.append(director.getFirstName() + " " + director.getLastName());
+                sb.append(director.getFirstName());
+                sb.append(" ");
+                sb.append(director.getLastName());
             }
             else{
-                sb.append(director.getFirstName() + " " + director.getLastName() + ", ");
+                sb.append(director.getFirstName());
+                sb.append(" ");
+                sb.append(director.getLastName());
+                sb.append(", ");
             }
         }
         return sb.toString().trim();
@@ -514,7 +517,8 @@ public class MoviesPanel extends javax.swing.JPanel {
                 sb.append(genre.getName());
             }
             else{
-                sb.append(genre.getName() + ", ");
+                sb.append(genre.getName());
+                sb.append(" ");
             }
         }
         
