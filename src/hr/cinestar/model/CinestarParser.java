@@ -218,8 +218,12 @@ public class CinestarParser {
         String[] string = data.split(DELIMITER);
         for (String person : string) {
             String[] name = person.trim().split(" ", 2);
-            
-            persons.add(new Person(name[0], name[1]));
+            if (name.length < 2) {
+                persons.add(new Person(name[0].trim(), "-"));
+            }
+            else{
+                persons.add(new Person(name[0].trim(), name[1].trim()));
+            }
         }
     }
     

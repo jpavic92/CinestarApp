@@ -91,7 +91,7 @@ public class Movie {
         this.originalTitle = originalTitle;
     }
 
-    public List<Genre> getGenre() {
+    public List<Genre> getGenres() {
         return genres;
     }
 

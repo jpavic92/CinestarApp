@@ -327,7 +327,7 @@ public class MoviesPanel extends javax.swing.JPanel{
             filteredMovies = new ArrayList();
             Genre selectedGenre = (Genre)evt.getItem();
             filteredMovies.addAll(movies.stream()
-            .filter(movie -> movie.getGenre()
+            .filter(movie -> movie.getGenres()
             .contains(selectedGenre))
             .collect(Collectors
             .toList()));
@@ -506,15 +506,15 @@ public class MoviesPanel extends javax.swing.JPanel{
     private String setGenres() {
         StringBuilder sb = new StringBuilder();
         
-        for (int i = 0; i < selectedMovie.getGenre().size(); i++) {
-            Genre genre = selectedMovie.getGenre().get(i);
+        for (int i = 0; i < selectedMovie.getGenres().size(); i++) {
+            Genre genre = selectedMovie.getGenres().get(i);
             
-           if (i == selectedMovie.getGenre().size() - 1) {
+           if (i == selectedMovie.getGenres().size() - 1) {
                 sb.append(genre.getName());
             }
             else{
                 sb.append(genre.getName());
-                sb.append(" ");
+                sb.append(", ");
             }
         }
         

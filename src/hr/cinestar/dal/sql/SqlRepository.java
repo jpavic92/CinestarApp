@@ -578,8 +578,8 @@ public class SqlRepository implements Repository {
             int genreId;
             
             for (Movie movie : movies) {
-                if (!movie.getGenre().isEmpty()) {
-                    for (Genre genre : movie.getGenre()) {
+                if (!movie.getGenres().isEmpty()) {
+                    for (Genre genre : movie.getGenres()) {
                         genreId = genres
                                 .stream()
                                 .filter(g -> g.equals(genre))

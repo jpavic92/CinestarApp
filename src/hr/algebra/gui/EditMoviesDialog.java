@@ -13,6 +13,9 @@ import hr.cinestar.dal.Repository;
 import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
 import hr.cinestar.model.Person;
+import hr.cinestar.model.PersonTransferable;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,8 +26,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -43,9 +48,9 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     private List<JLabel> modelErrorLables;
     
     private List<Person> allPersonsList;
-    private final List<Person> directorsList = new ArrayList<>();
-    private final List<Person> actorsList = new ArrayList<>();
-    private final List<Genre> genresList = new ArrayList<>();
+    private List<Person> directorsList;
+    private List<Person> actorsList;
+    private List<Genre> genresList;
     
     private final DefaultListModel<Person> directorsModel = new DefaultListModel<>();
     private final DefaultListModel<Person> actorsModel = new DefaultListModel<>();
@@ -402,7 +407,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
             initForm();
             initValidation();
             initDragNDrop();
-            initAllPersonsList();
+            loadAllPersonModel();
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to initate the form");
@@ -417,17 +422,26 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         tfPosterPath.setColumns(1);
         
         if (optMovie.isPresent()) {
-            selectedMovie = optMovie.get();
-            this.setTitle(EDIT_MOVIE_TITLE);
-            btnSubmit.setText(EDIT_MOVIE_TITLE);
-            //setUpdateMode();
-            fillForm();
+            initUpdateMode();
         }
         else{
-            this.setTitle(ADD_MOVIE_TITLE);
-            btnSubmit.setText(ADD_MOVIE_TITLE);
-            //setAddMode();
+            initAddMode();
         }
+    }
+     
+    private void initUpdateMode() {
+        selectedMovie = optMovie.get();
+        this.setTitle(EDIT_MOVIE_TITLE);
+        btnSubmit.setText(EDIT_MOVIE_TITLE);
+        fillForm();
+    }
+
+    private void initAddMode() {
+        directorsList = new ArrayList<>();
+        actorsList = new ArrayList<>();
+        genresList = new ArrayList<>();
+        this.setTitle(ADD_MOVIE_TITLE);
+        btnSubmit.setText(ADD_MOVIE_TITLE);
     }
 
     private void fillForm() {
@@ -441,19 +455,41 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         tfLink.setCaretPosition(0);
         
         tfPosterPath.setText(selectedMovie.getPosterPath());
+        
+        tfDate.setText(Movie.DATE_FORMAT.format(selectedMovie.getBeginningDate()));
+        
+        directorsList = selectedMovie.getDirectors();
+        actorsList = selectedMovie.getActors();
+        genresList = selectedMovie.getGenres();
+        loadDirectorsModel();
+        loadActorsModel();
+        loadGenresModel();
     }
 
-    private void initAllPersonsList() throws Exception {
+    private void loadAllPersonModel() throws Exception {
         allPersonsList = repo.selectPersons();
-        loadAllPersonModel();
-    }
-
-    private void loadAllPersonModel() {
         DefaultListModel<Person> allPersonsModel = new DefaultListModel<>();
         allPersonsList.forEach(person -> allPersonsModel.addElement(person));
         lsPersons.setModel(allPersonsModel);
     }
+    
+    private void loadDirectorsModel() {
+        directorsModel.clear();
+        directorsList.forEach(director -> directorsModel.addElement(director));
+        lsDirectors.setModel(directorsModel);
+    }
+    
+    private void loadActorsModel() {
+        actorsModel.clear();
+        actorsList.forEach(actor -> actorsModel.addElement(actor));
+        lsActors.setModel(actorsModel);
+    }
 
+    private void loadGenresModel() {
+        genresModel.clear();
+        genresList.forEach(genre -> genresModel.addElement(genre));
+        lsGenres.setModel(genresModel);
+    }
     private void initValidation() {
         validationsFields = Arrays.asList(tfTitle, tfOriginalTitle, taDescription, tfLink, tfPosterPath, tfDate);
         fieldErrorLabels = Arrays.asList(lblTitleError, lblOriginalTitleError, lblDescriptionError, lblLinkError, lblPosterPathError, lblDateError);
@@ -536,14 +572,79 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         lsPersons.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         lsPersons.setDragEnabled(true);
         
-        /*  lsPersons.setTransferHandler(new ExportTransferHandler());
+        lsPersons.setTransferHandler(new ExportTransferHandler());
         
         lsDirectors.setDropMode(DropMode.ON);
         lsActors.setDropMode(DropMode.ON);
         
-        lsDirectors.setTransferHandler(new ImportTransferHandler());
-        lsActors.setTransferHandler(new ImportTransferHandler());*/
+        lsDirectors.setTransferHandler(new ImportTransferHandler(ImportTransferHandler.TO_DIRECTORS));
+        lsActors.setTransferHandler(new ImportTransferHandler(ImportTransferHandler.TO_ACTORS));
     }
 
-   
+    private class ExportTransferHandler extends TransferHandler {
+
+        @Override
+        public int getSourceActions(JComponent jc) {
+            return COPY;
+        }
+
+        @Override
+        protected Transferable createTransferable(JComponent jc) {
+            return new PersonTransferable(lsPersons.getSelectedValue());
+        }
+    }
+
+    private class ImportTransferHandler extends TransferHandler {
+        static final int TO_DIRECTORS = 1;
+        static final int TO_ACTORS = 2;
+        
+        private final int destination;
+
+        ImportTransferHandler(int destination) {
+            this.destination = destination;
+        }
+
+        @Override
+        public boolean canImport(TransferSupport support) {
+            return support.isDataFlavorSupported(PersonTransferable.PERSON_FLAVOR);
+        }
+
+        @Override
+        public boolean importData(TransferSupport support) {
+            Transferable transferable = support.getTransferable();
+            
+            try {
+                Person person = (Person)transferable.getTransferData(PersonTransferable.PERSON_FLAVOR);
+                switch(destination){
+                    case 1:
+                        transferToDirectors(person);
+                        return true;
+                    case 2:
+                        transferToActors(person);
+                        return true;
+                    default:
+                        return false;
+                }
+                
+            } catch (UnsupportedFlavorException | IOException ex) {
+                Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            
+            return false;
+        }
+
+        private void transferToDirectors(Person person) {
+            if (!directorsList.contains(person)) {
+                directorsList.add(person);
+                loadDirectorsModel();
+            }
+        }
+
+        private void transferToActors(Person person) {
+            if (!actorsList.contains(person)) {
+                actorsList.add(person);
+                loadActorsModel();
+            }
+        }
+    }
 }
