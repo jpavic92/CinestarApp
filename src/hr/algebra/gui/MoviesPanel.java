@@ -329,8 +329,7 @@ public class MoviesPanel extends javax.swing.JPanel{
             filteredMovies.addAll(movies.stream()
             .filter(movie -> movie.getGenres()
             .contains(selectedGenre))
-            .collect(Collectors
-            .toList()));
+            .collect(Collectors.toList()));
             
             movieModel.setMovies(filteredMovies);
         }

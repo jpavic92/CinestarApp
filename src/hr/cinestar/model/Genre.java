@@ -42,7 +42,7 @@ public class Genre {
 
     @Override
     public String toString() {
-        return name.toUpperCase();
+        return name.toLowerCase();
     }
 
     @Override
