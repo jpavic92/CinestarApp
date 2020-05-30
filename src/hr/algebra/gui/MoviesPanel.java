@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import hr.cinestar.model.MovieTableModel;
+import hr.cinestar.model.PanelClosingListener;
 import hr.cinestar.model.Person;
 import java.awt.Desktop;
 import java.awt.event.ItemEvent;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.JTextComponent;
 
@@ -36,7 +38,7 @@ import javax.swing.text.JTextComponent;
  *
  * @author Josip
  */
-public class MoviesPanel extends javax.swing.JPanel{
+public class MoviesPanel extends javax.swing.JPanel {
     
     private static final String DEFAULT_POSTER_PATH = "/assets/fimlstrip.jpg";
     private Repository repo;
@@ -45,6 +47,7 @@ public class MoviesPanel extends javax.swing.JPanel{
     private List<Movie> movies;
     private List<JTextComponent> textFields;
     private Movie selectedMovie;
+    private boolean changes = false;
     
     
 
@@ -344,28 +347,31 @@ public class MoviesPanel extends javax.swing.JPanel{
             return;
         }
         
-        try {
-            repo.deleteMovie(selectedMovie.getId());
-            movies = repo.selectMovies();
-            movieModel.setMovies(movies);
-            
-            File posterFile = new File(selectedMovie.getPosterPath());
-            
-            if (posterFile.delete()) {
-                MessageUtils.showInformationMessage("Success", "Selected movie has been deleted");
+        if (MessageUtils.showConfirmationMessage("Delete movie?", "Are you sure?") == JOptionPane.YES_OPTION) {
+            try {
+                repo.deleteMovie(selectedMovie.getId());
+                movies.remove(selectedMovie); // ovdje se može pozvati ažurirana baza ali nisam siguran zašto bih radio konekciju kad je ovako brže i ne čini se manje sigurno
+                movieModel.setMovies(movies);
+                
+                File posterFile = new File(selectedMovie.getPosterPath());
+                
+                if (posterFile.delete()) {
+                    MessageUtils.showInformationMessage("Success", "Movie \"" + selectedMovie.getTitle() + "\" has been deleted");
+                }
+                
+                clearForm();
+                
+            } catch (Exception ex) {
+                Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage("Error", "Unable to delete the movie");
             }
-            
-            clearForm();
-            
-        } catch (Exception ex) {
-            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage("Error", "Unable to delete the movie");
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        new EditMoviesDialog((JFrame)this.getRootPane().getParent(), true, repo)
-                .setVisible(true);
+        EditMoviesDialog editMoviesDialog = new EditMoviesDialog((JFrame)this.getRootPane().getParent(), true, this);
+        /*editMoviesDialog.addListener(new MoviePanelClosingListener());*/
+        editMoviesDialog.setVisible(true);
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -373,7 +379,7 @@ public class MoviesPanel extends javax.swing.JPanel{
             MessageUtils.showInformationMessage("No movie selected", "Please select a movie");
             return;
         }
-        new EditMoviesDialog((JFrame)this.getRootPane().getParent(), true, repo, selectedMovie)
+        new EditMoviesDialog((JFrame)this.getRootPane().getParent(), true, this, selectedMovie)
                 .setVisible(true);
     }//GEN-LAST:event_btnUpdateActionPerformed
 
@@ -409,8 +415,8 @@ public class MoviesPanel extends javax.swing.JPanel{
         try {
             initTextFields();
             initRepo();
-            movies = repo.selectMovies();
             initTable();
+            loadTableModel();
             initFilter();
         } catch (Exception ex) {
             Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -422,13 +428,17 @@ public class MoviesPanel extends javax.swing.JPanel{
     private void initRepo() throws Exception {
        repo = RepositoryFactory.getRepository();
     }
+    
+    private void loadTableModel() throws Exception {
+        movies = repo.selectMovies();
+        movieModel = new MovieTableModel(movies);
+        tblMovies.setModel(movieModel);
+    }
 
     private void initTable(){
         tblMovies.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblMovies.setRowHeight(25);
         tblMovies.setAutoCreateRowSorter(true);
-        movieModel = new MovieTableModel(movies);
-        tblMovies.setModel(movieModel);
     }
 
     private void clearForm() {
@@ -539,4 +549,29 @@ public class MoviesPanel extends javax.swing.JPanel{
         DefaultComboBoxModel model = new DefaultComboBoxModel(genres.toArray());
         cbFilterGenre.setModel(model);
     }
+    
+    public void refreshData() {
+        try {
+            clearForm();
+            loadTableModel();
+        } catch (Exception ex) {
+            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+    
+    public void setChanges(boolean changes){
+        this.changes = changes;
+    }
+
+    /*  private class MoviePanelClosingListener implements PanelClosingListener {
+    
+    public MoviePanelClosingListener() {
+    }
+    
+    @Override
+    public void refreshData() {
+    clearForm();
+    loadTableModel();
+    }
+    }*/
 }

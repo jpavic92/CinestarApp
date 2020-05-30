@@ -10,27 +10,35 @@ import hr.algebra.utils.IconUtils;
 import hr.algebra.utils.MessageUtils;
 import hr.algebra.utils.UrlUtils;
 import hr.cinestar.dal.Repository;
+import hr.cinestar.dal.RepositoryFactory;
 import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
+import hr.cinestar.model.PanelClosingListener;
 import hr.cinestar.model.Person;
 import hr.cinestar.model.PersonTransferable;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.DropMode;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import javax.swing.TransferHandler;
 import javax.swing.text.JTextComponent;
@@ -40,12 +48,16 @@ import javax.swing.text.JTextComponent;
  * @author Josip
  */
 public class EditMoviesDialog extends javax.swing.JDialog {
+    private static final String DIR = "assets"; 
+    private static final Random RANDOM = new  Random();
     
     private static final String ADD_MOVIE_TITLE = "Add movie";
     private static final String EDIT_MOVIE_TITLE = "Edit movie";
     
     private List<JTextComponent> validationsFields;
     private List<DefaultListModel> validationModels;
+    
+    private List<PanelClosingListener> listeners = new ArrayList<>();
     
     private List<JLabel> fieldErrorLabels;
     private List<JLabel> modelErrorLables;
@@ -60,10 +72,12 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     private final DefaultListModel<Person> actorsModel = new DefaultListModel<>();
     private final DefaultListModel<Genre> genresModel = new DefaultListModel<>();
     
-    private final Repository repo;
+    private Repository repo;
     private Optional<Movie> optMovie = Optional.empty();
     private Movie selectedMovie;
+    private MoviesPanel parentPanel;
     
+    //private boolean dataChagned = false;
     //napraviti DnD - provjeriti vjezbe 11
     //napraviti popup za genre
 
@@ -72,20 +86,19 @@ public class EditMoviesDialog extends javax.swing.JDialog {
      * Creates new form EditMoviesDialog
      * @param parent
      * @param modal
-     * @param repo
      */
-    public EditMoviesDialog(java.awt.Frame parent, boolean modal, Repository repo) {
+    public EditMoviesDialog(java.awt.Frame parent, boolean modal, MoviesPanel parentPanel) {
         super(parent, modal);
         initComponents();
-        this.repo = repo;
+        this.parentPanel = parentPanel;
         init();
     }
     
-     public EditMoviesDialog(java.awt.Frame parent, boolean modal, Repository repo, Movie movie) {
+     public EditMoviesDialog(java.awt.Frame parent, boolean modal, MoviesPanel parentPanel, Movie movie) {
         super(parent, modal);
         initComponents();
-        this.repo = repo;
         optMovie = Optional.of(movie);
+        this.parentPanel = parentPanel;
         init();
     }
 
@@ -391,15 +404,33 @@ public class EditMoviesDialog extends javax.swing.JDialog {
             return;
         }
         if (!optMovie.isPresent()) {
-        selectedMovie = new Movie();
+            selectedMovie = new Movie();
         }
-        selectedMovie.setTitle(tfTitle.getText().trim());
-        selectedMovie.setOriginalTitle(tfOriginalTitle.getText().trim());
-        selectedMovie.setDescription(taDescription.getText().trim());
-        selectedMovie.setLink(tfLink.getText().trim());
-        selectedMovie.setPosterPath(tfPosterPath.getText().trim());
+        try {
+            saveNewGenres();
+            String localPosterPath = handleImage();
+            selectedMovie.setTitle(tfTitle.getText().trim());
+            selectedMovie.setOriginalTitle(tfOriginalTitle.getText().trim());
+            selectedMovie.setDescription(taDescription.getText().trim());
+            selectedMovie.setLink(tfLink.getText().trim());
+            selectedMovie.setPosterPath(localPosterPath);
+            selectedMovie.setBeginningDate(Movie.DATE_FORMAT.parse(tfDate.getText().trim()));
+            selectedMovie.setDirectors(directorsList);
+            selectedMovie.setActors(actorsList);
+            selectedMovie.setGenres(new ArrayList<>(genresSet));
+            
+            addOrUpdate();
+        } catch (ParseException | IOException ex) {
+            Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to add/update the movie");
+        } catch (Exception ex) {
+            Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to add/update the movie");
+        }
         
-        //addOrUpdate();
+        //dataChagned = true;
+        parentPanel.refreshData();
+        dispose();
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
@@ -428,9 +459,11 @@ public class EditMoviesDialog extends javax.swing.JDialog {
 
     private void init() {
         try {
+            initRepo();
             initForm();
             initValidation();
             initDragNDrop();
+            //initListener();
             loadAllPersonModel();
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -551,18 +584,13 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         
         return ok;
     }
-      private void addOrUpdate() {
-          //dodati novi genre ako ga ima
-        try {
-            if (optMovie.isPresent()) {
-                repo.updateMovie(selectedMovie.getId(), selectedMovie);
-            }
-            else{
-                repo.createMovie(selectedMovie);
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage("Error", "Unable to add/update movie");
+      private void addOrUpdate() throws Exception {
+        
+        if (optMovie.isPresent()) {
+            repo.updateMovie(selectedMovie.getId(), selectedMovie);
+        }
+        else{
+            repo.createMovie(selectedMovie);
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -618,6 +646,60 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         
         lsDirectors.setTransferHandler(new ImportTransferHandler(ImportTransferHandler.TO_DIRECTORS));
         lsActors.setTransferHandler(new ImportTransferHandler(ImportTransferHandler.TO_ACTORS));
+    }
+
+    private void saveNewGenres() throws Exception {
+        if (allGenresSet.containsAll(genresSet)) {
+            return;
+        }
+        
+        for (Genre genre : genresSet) {
+            if (!allGenresSet.contains(genre)) {
+                genre.setId(repo.createGenre(genre)); //create new genre in DB and set new ID given by DB
+            }
+        }
+    }
+
+    private String handleImage() throws IOException {
+        String path = tfPosterPath.getText().trim();
+        String ext = path.substring(path.lastIndexOf("."));
+        String posterName = Math.abs(RANDOM.nextInt()) + ext;
+        
+        String localPosterPath = DIR + File.separator + posterName;
+        
+        FileUtils.copy(path, localPosterPath);
+        return localPosterPath;
+    }
+
+    /*private void initListener() {
+    addWindowListener(new WindowAdapter() {
+    @Override
+    public void windowClosing(WindowEvent we) {
+    if (dataChagned) {
+    listeners.forEach(listener -> listener.refreshData());
+    }
+    }
+    
+    @Override
+    public void windowDeactivated(WindowEvent we) {
+    if (dataChagned) {
+    listeners.forEach(listener -> listener.refreshData());
+    }
+    }
+    });
+    
+    addComponentListener(new ComponentAdapter() {
+    @Override
+    public void componentHidden(ComponentEvent ce) {
+    if (dataChagned) {
+    listeners.forEach(listener -> listener.refreshData());
+    }
+    }
+    
+    });
+    }*/
+    private void initRepo() {
+        repo = RepositoryFactory.getRepository();
     }
 
     private class ExportTransferHandler extends TransferHandler {
@@ -690,7 +772,16 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     public void addGenreToList(Genre genre){
         if (genresSet.add(genre)) {
             loadGenresModel();
+        }   
+    }
+    
+    public void addListener(PanelClosingListener listener){
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
         }
-        
+    }
+    
+    public void proba(){
+        System.out.println("bok");
     }
 }

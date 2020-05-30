@@ -63,4 +63,8 @@ public class MovieTableModel extends AbstractTableModel  {
         fireTableDataChanged();
     }
     
+    public void clear(){
+        movies.clear();
+        fireTableDataChanged();
+    }
 }

@@ -111,6 +111,10 @@ public class AddGenreDialog extends javax.swing.JDialog {
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Genre genre = new Genre(tfGenreName.getText().trim());
+        if (allGenresSet.contains(genre)) {
+            genre.setId(selectedGenre.getId());
+        }
+        
         parent.addGenreToList(genre);
         notSelectedGenres.remove(genre);
         loadGenresModel();

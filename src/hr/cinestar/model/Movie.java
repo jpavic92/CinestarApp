@@ -95,7 +95,7 @@ public class Movie {
         return genres;
     }
 
-    public void setGenre(List<Genre> genre) {
+    public void setGenres(List<Genre> genre) {
         this.genres = genre;
     }
 

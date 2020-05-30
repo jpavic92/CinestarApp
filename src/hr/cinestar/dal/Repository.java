@@ -35,9 +35,9 @@ public interface Repository {
     List<Person> selectPersons() throws Exception; 
     
     //Genres
-    void createGenres(Set<Genre> genres) throws Exception; // map
+    int createGenre(Genre genre) throws Exception; // map
     List<Genre> selectGenres() throws Exception;
-    void createMovieGenre(int movieId, Set<Genre> genres) throws Exception;
+    void createMovieGenre(int movieId, List<Genre> genres) throws Exception;
     
     //MovieRoles
     void createMovieInvolvements(int movieId, List<Person> directors, List<Person> actors) throws Exception;

@@ -76,6 +76,7 @@ public class SqlRepository implements Repository {
     @Override
     public int createMovie(Movie movie) throws Exception {
         DataSource ds = DataSourceSingleton.getInstance();
+        int movieId;
 
         try (Connection con = ds.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
@@ -89,8 +90,13 @@ public class SqlRepository implements Repository {
 
             stmt.registerOutParameter(7, Types.INTEGER);
             stmt.executeUpdate();
-            return stmt.getInt(7);
+            movieId = stmt.getInt(7);
+            createMovieGenre(movieId, movie.getGenres());
+            createMovieInvolvements(movieId, movie.getDirectors(), movie.getActors());
+            
+            return movieId;
         }
+        
     }
 
     @Override
@@ -321,16 +327,15 @@ public class SqlRepository implements Repository {
 
     //CRUD GENRE
     @Override
-    public void createGenres(Set<Genre> genres) throws Exception {
+    public int createGenre(Genre genre) throws Exception {
         DataSource ds = DataSourceSingleton.getInstance();
 
         try (Connection con = ds.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_GENRE)) {
-
-            for (Genre genre : genres) {
-                stmt.setString(1, genre.getName());
-                stmt.executeUpdate();
-            }
+            stmt.setString(1, genre.getName());
+            stmt.registerOutParameter(2, Types.INTEGER);
+            stmt.executeUpdate();
+            return stmt.getInt(2);
         }
     }
 
@@ -470,7 +475,7 @@ public class SqlRepository implements Repository {
     }
 
     @Override
-    public void createMovieGenre(int movieId, Set<Genre> genres) throws Exception {
+    public void createMovieGenre(int movieId, List<Genre> genres) throws Exception {
         DataSource ds = DataSourceSingleton.getInstance();
 
         try (Connection con = ds.getConnection();

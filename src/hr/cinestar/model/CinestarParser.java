@@ -186,7 +186,7 @@ public class CinestarParser {
                                 if (movie != null && !data.isEmpty()) {
                                     genres = new ArrayList<>();
                                     addGenres(genres, data);
-                                    movie.setGenre(genres);
+                                    movie.setGenres(genres);
                                 }
                                 break;
                             case PLAKAT:
