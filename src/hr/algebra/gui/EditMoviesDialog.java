@@ -420,6 +420,8 @@ public class EditMoviesDialog extends javax.swing.JDialog {
             selectedMovie.setGenres(new ArrayList<>(genresSet));
             
             addOrUpdate();
+            parentPanel.refreshData();
+            dispose();
         } catch (ParseException | IOException ex) {
             Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to add/update the movie");
@@ -429,8 +431,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         }
         
         //dataChagned = true;
-        parentPanel.refreshData();
-        dispose();
+
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
