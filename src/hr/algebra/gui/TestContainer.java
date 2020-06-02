@@ -17,7 +17,7 @@ public class TestContainer extends javax.swing.JFrame{
     
     private MoviesPanel mp;
     private PersonsPanel pp;
-    private static final Dimension MOVIE_PANEL_DIM = new Dimension(920, 810);
+    private static final Dimension MOVIE_PANEL_DIM = new Dimension(930, 850);
     private static final Dimension PERSONS_PANEL_DIM = new Dimension(710, 540);
 
     /**
@@ -168,7 +168,7 @@ public class TestContainer extends javax.swing.JFrame{
     private void setupPanels() {
         //tbContent.add("Cinestar movies", new MoviesPanel());
         mp = new MoviesPanel();
-        mp.setSize(new Dimension(this.getWidth(), this.getHeight() - 45));
+        mp.setSize(new Dimension(this.getWidth(), this.getHeight() - 60));
         this.add("Cinestar movies", mp);
         
         pp = new PersonsPanel();
