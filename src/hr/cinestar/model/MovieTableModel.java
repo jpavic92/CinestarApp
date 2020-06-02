@@ -20,9 +20,6 @@ public class MovieTableModel extends AbstractTableModel  {
     public MovieTableModel(List<Movie> movies){
         this.movies = movies;
     }
-    
-    public MovieTableModel(){
-    }
 
     @Override
     public int getRowCount() {
@@ -64,4 +61,15 @@ public class MovieTableModel extends AbstractTableModel  {
         this.movies = movies;
         fireTableDataChanged();
     }
+
+    @Override
+    public Class<?> getColumnClass(int i) {
+        switch(i){
+            case 0:
+                return Integer.class;
+        }
+        return super.getColumnClass(i);
+    }
+    
+    
 }

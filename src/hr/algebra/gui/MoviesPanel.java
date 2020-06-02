@@ -42,7 +42,7 @@ public class MoviesPanel extends javax.swing.JPanel {
     
     private static final String DEFAULT_POSTER_PATH = "/assets/fimlstrip.jpg";
     private Repository repo;
-    private MovieTableModel movieModel = new MovieTableModel();
+    private MovieTableModel movieModel;
     
     private List<Movie> movies;
     private List<JTextComponent> textFields;
@@ -219,17 +219,20 @@ public class MoviesPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addComponent(cbFilterGenre, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(cbFilterGenre, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(lblPoster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(54, 54, 54))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(71, 71, 71)
                         .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
@@ -428,16 +431,19 @@ public class MoviesPanel extends javax.swing.JPanel {
        repo = RepositoryFactory.getRepository();
     }
     
-    private void loadTableModel() throws Exception {
+    private void initTable() throws Exception{
+        tblMovies.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblMovies.setRowHeight(27);
+        tblMovies.setAutoCreateRowSorter(true);
+        movies = repo.selectMovies();
+        movieModel = new MovieTableModel(movies);
+        tblMovies.setModel(movieModel);
+        tblMovies.getColumnModel().getColumn(0).setMaxWidth(45);
+    }
+    
+     private void loadTableModel() throws Exception {
         movies = repo.selectMovies();
         movieModel.setMovies(movies);
-        tblMovies.setModel(movieModel);
-    }
-
-    private void initTable(){
-        tblMovies.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        tblMovies.setRowHeight(25);
-        tblMovies.setAutoCreateRowSorter(true);
     }
 
     private void clearForm() {

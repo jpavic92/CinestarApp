@@ -25,6 +25,7 @@ public interface Repository {
     void deleteMovie(int id) throws Exception;
     Optional<Movie> selectMovie(int id) throws Exception;
     List<Movie> selectMovies() throws Exception;
+    List<Integer> selectMoviesIdByPersonRole(int personId, int roleId) throws Exception;
     
     //CRUD person
     int createPerson(Person person) throws Exception;

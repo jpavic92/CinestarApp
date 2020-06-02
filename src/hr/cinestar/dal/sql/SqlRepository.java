@@ -52,7 +52,8 @@ public class SqlRepository implements Repository {
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies () }";
-
+    private static final String SELECT_MOVIES_ID_BY_PERSONROLE = "{ CALL selectMoviesIdByPersonRole (?, ?) }";
+    
     //Person
     private static final String CREATE_PERSON = "{ CALL createPerson (?,?,?) }";
     private static final String UPDATE_PERSON = "{ CALL updatePerson (?,?,?) }";
@@ -599,6 +600,25 @@ public class SqlRepository implements Repository {
                 }
             }
         }
+    }
+
+    @Override
+    public List<Integer> selectMoviesIdByPersonRole(int personId, int roleId) throws Exception {
+        List<Integer> moviesIds = new ArrayList<>();
+        DataSource ds = DataSourceSingleton.getInstance();
+        
+        try(Connection con = ds.getConnection();
+           CallableStatement stmt = con.prepareCall(SELECT_MOVIES_ID_BY_PERSONROLE)){
+            
+            stmt.setInt(1, personId);
+            stmt.setInt(2, roleId);
+            ResultSet rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                moviesIds.add(rs.getInt("MovieId"));
+            }
+        }
+        return moviesIds;
     }
     
     

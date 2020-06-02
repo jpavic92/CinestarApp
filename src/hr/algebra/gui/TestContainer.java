@@ -18,7 +18,7 @@ public class TestContainer extends javax.swing.JFrame{
     private MoviesPanel mp;
     private PersonsPanel pp;
     private static final Dimension MOVIE_PANEL_DIM = new Dimension(920, 810);
-    private static final Dimension PERSONS_PANEL_DIM = new Dimension(650, 480);
+    private static final Dimension PERSONS_PANEL_DIM = new Dimension(710, 540);
 
     /**
      * Creates new form TestContainer
