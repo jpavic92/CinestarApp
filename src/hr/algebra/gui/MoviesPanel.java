@@ -45,7 +45,8 @@ public class MoviesPanel extends javax.swing.JPanel {
     private MovieTableModel movieModel;
     
     private List<Movie> movies;
-    private final List<Movie> filteredMovies = new ArrayList<>();
+    private final List<Movie> filteredByLetters = new ArrayList<>();
+    List<Movie> filteredByGenre = new ArrayList<>();
     private List<JTextComponent> textFields;
     private Movie selectedMovie;
     private boolean changes = false;
@@ -342,19 +343,17 @@ public class MoviesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnGoToActionPerformed
 
     private void cbFilterGenreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbFilterGenreItemStateChanged
-        if (evt.getStateChange() == ItemEvent.DESELECTED) {
-            return;
-        }
-        List<Movie> filteredMovies = null;
+            filteredByGenre.clear();
         if (cbFilterGenre.getSelectedIndex() != 0 && evt.getStateChange() == ItemEvent.SELECTED) {
-            filteredMovies = new ArrayList();
+            filteredByGenre = new ArrayList();
             Genre selectedGenre = (Genre)evt.getItem();
-            filteredMovies.addAll(movies.stream()
+            
+            filteredByGenre.addAll(movies.stream()
             .filter(movie -> movie.getGenres()
             .contains(selectedGenre))
             .collect(Collectors.toList()));
             
-            movieModel.setMovies(filteredMovies);
+            movieModel.setMovies(filteredByGenre);
         }
         else{
             movieModel.setMovies(movies);
@@ -404,9 +403,17 @@ public class MoviesPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void tfFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfFilterKeyReleased
-            filteredMovies.clear();
-            movies.stream().filter(movie -> movie.getTitle().toLowerCase().startsWith(tfFilter.getText().toLowerCase().trim())).forEach(movie -> filteredMovies.add(movie));
-            movieModel.setMovies(filteredMovies);
+            List<Movie> listToFilter;
+            if (cbFilterGenre.getSelectedIndex() == 0) {
+                listToFilter = movies;
+            }
+            else{
+                listToFilter = filteredByGenre;
+            }
+            
+            filteredByLetters.clear();
+            listToFilter.stream().filter(movie -> movie.getTitle().toLowerCase().startsWith(tfFilter.getText().toLowerCase().trim())).forEach(movie -> filteredByLetters.add(movie));
+            movieModel.setMovies(filteredByLetters);
     }//GEN-LAST:event_tfFilterKeyReleased
 
 
