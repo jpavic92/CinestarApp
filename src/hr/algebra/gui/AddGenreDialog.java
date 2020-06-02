@@ -34,7 +34,7 @@ public class AddGenreDialog extends javax.swing.JDialog {
     /**
      * Creates new form AddGenreDialog
      */
-    public AddGenreDialog(JDialog parent, boolean modal, Collection<Genre> genres, Collection<Genre> allGenres) {
+    public AddGenreDialog(JDialog parent, boolean modal, Set<Genre> genres, Set<Genre> allGenres) {
         super(parent, modal);
         initComponents();
         this.parent = (EditMoviesDialog)parent;
@@ -130,7 +130,7 @@ public class AddGenreDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void init() {
-        makeDifference();
+        filterGenres();
         loadGenresModel();
        
     }
@@ -141,7 +141,7 @@ public class AddGenreDialog extends javax.swing.JDialog {
         lsGenres.setModel(genresModel);
     }
 
-    private void makeDifference() {
+    private void filterGenres() {
         notSelectedGenres = allGenresSet
                             .stream()
                             .filter(genre -> !genresSet.contains(genre))
@@ -151,4 +151,5 @@ public class AddGenreDialog extends javax.swing.JDialog {
     private void clearForm() {
         tfGenreName.setText("");
     }
+
 }

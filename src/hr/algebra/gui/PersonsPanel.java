@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -43,12 +44,11 @@ public class PersonsPanel extends javax.swing.JPanel {
     
     private Person selectedPerson;
     private Map<Integer, Movie> allMovies;
-    private final Set<Movie> moviesDirects = new HashSet<>();
-    private final Set<Movie> moviesActs = new HashSet<>();
-    private Set<Movie> notUsedMovies;
+    private final Set<Movie> moviesDirected = new HashSet<>();
+    private final Set<Movie> moviesActed = new HashSet<>();
     
-    private final DefaultListModel<Movie> moviesDirectsModel = new DefaultListModel<>();
-    private final DefaultListModel<Movie> moviesActsModel = new DefaultListModel<>();
+    private final DefaultListModel<Movie> moviesDirectedModel = new DefaultListModel<>();
+    private final DefaultListModel<Movie> moviesActedModel = new DefaultListModel<>();
     
     /**
      * Creates new form PersonsPanel
@@ -84,10 +84,10 @@ public class PersonsPanel extends javax.swing.JPanel {
         btnAdd = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        btnAddActed = new javax.swing.JButton();
+        btnRemoveActed = new javax.swing.JButton();
+        btnAddDirected = new javax.swing.JButton();
+        btnRemoveDirected = new javax.swing.JButton();
 
         setPreferredSize(new java.awt.Dimension(665, 430));
 
@@ -146,13 +146,33 @@ public class PersonsPanel extends javax.swing.JPanel {
             }
         });
 
-        jButton1.setText("Add");
+        btnAddActed.setText("Add");
+        btnAddActed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActedActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Remove");
+        btnRemoveActed.setText("Remove");
+        btnRemoveActed.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActedActionPerformed(evt);
+            }
+        });
 
-        jButton3.setText("Add");
+        btnAddDirected.setText("Add");
+        btnAddDirected.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDirectedActionPerformed(evt);
+            }
+        });
 
-        jButton4.setText("Remove");
+        btnRemoveDirected.setText("Remove");
+        btnRemoveDirected.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveDirectedActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -187,15 +207,15 @@ public class PersonsPanel extends javax.swing.JPanel {
                             .addComponent(lblLastNameError, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblFirstNameError, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnAddActed)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2))
+                        .addComponent(btnRemoveActed))
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton3)
+                        .addComponent(btnAddDirected)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)))
+                        .addComponent(btnRemoveDirected)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -233,16 +253,16 @@ public class PersonsPanel extends javax.swing.JPanel {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton1)
-                            .addComponent(jButton2))
+                            .addComponent(btnAddActed)
+                            .addComponent(btnRemoveActed))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4))))
+                            .addComponent(btnAddDirected)
+                            .addComponent(btnRemoveDirected))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -317,15 +337,37 @@ public class PersonsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
+    private void btnAddActedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActedActionPerformed
+        new AddMovieDialog((JFrame)this.getRootPane().getParent(), false, this, moviesActed, allMovies, MovieRole.ACTOR).setVisible(true);
+    }//GEN-LAST:event_btnAddActedActionPerformed
+
+    private void btnRemoveActedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActedActionPerformed
+        lsActs.getSelectedValuesList().forEach(movie -> {
+            moviesActed.remove(movie); 
+            moviesActedModel.removeElement(movie);
+        });
+    }//GEN-LAST:event_btnRemoveActedActionPerformed
+
+    private void btnAddDirectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDirectedActionPerformed
+        new AddMovieDialog((JFrame)this.getRootPane().getParent(), false, this, moviesDirected, allMovies, MovieRole.DIRECTOR).setVisible(true);
+    }//GEN-LAST:event_btnAddDirectedActionPerformed
+
+    private void btnRemoveDirectedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveDirectedActionPerformed
+        lsDirects.getSelectedValuesList().forEach(movie -> {
+            moviesDirected.remove(movie); 
+            moviesDirectedModel.removeElement(movie);
+        });
+    }//GEN-LAST:event_btnRemoveDirectedActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnAddActed;
+    private javax.swing.JButton btnAddDirected;
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnRemoveActed;
+    private javax.swing.JButton btnRemoveDirected;
     private javax.swing.JButton btnUpdate;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel6;
@@ -391,24 +433,33 @@ public class PersonsPanel extends javax.swing.JPanel {
     private void fillForm() throws Exception {
         tfFirstName.setText(selectedPerson.getFirstName());
         tfLastName.setText(selectedPerson.getLastName());
-        loadMovieDirectsModel();
-        loadMovieActsModel();
-    }
-
-    private void loadMovieActsModel() throws Exception {
-        moviesActsModel.clear();
-        List<Integer> moviesIds = repo.selectMoviesIdByPersonRole(selectedPerson.getId(), MovieRole.ACTOR.getRole());
-        moviesIds.forEach(id -> moviesActsModel.addElement(allMovies.get(id)));
-        //moviesActs.forEach(movie -> moviesActsModel.addElement(movie));
-        lsActs.setModel(moviesActsModel);
+        loadMoviesDirected();
+        loadMoviesActed();
+        loadMovieActedModel();
     }
     
-    private void loadMovieDirectsModel() throws Exception {
-        moviesDirectsModel.clear();
+     private void loadMoviesDirected() throws Exception {
+        List<Integer> moviesIds = repo.selectMoviesIdByPersonRole(selectedPerson.getId(), MovieRole.ACTOR.getRole());
+        moviesIds.forEach(id -> moviesActed.add(allMovies.get(id)));
+        loadMovieDirectedModel();
+    }
+
+    private void loadMoviesActed() throws Exception {
         List<Integer> moviesIds = repo.selectMoviesIdByPersonRole(selectedPerson.getId(), MovieRole.DIRECTOR.getRole());
-        moviesIds.forEach(id -> moviesDirectsModel.addElement(allMovies.get(id)));
-        //moviesActs.forEach(movie -> moviesActsModel.addElement(movie));
-        lsDirects.setModel(moviesDirectsModel);
+        moviesIds.forEach(id -> moviesDirectedModel.addElement(allMovies.get(id)));
+        loadMovieActedModel();
+    }
+    
+    private void loadMovieActedModel(){
+        moviesActedModel.clear();
+        moviesActed.forEach(movie -> moviesActedModel.addElement(movie));
+        lsActs.setModel(moviesActedModel);
+    }
+    
+    private void loadMovieDirectedModel(){
+        moviesDirectedModel.clear();
+        moviesDirected.forEach(movie -> moviesDirectedModel.addElement(movie));
+        lsDirects.setModel(moviesDirectedModel);
     }
 
     private void initMovies() throws Exception {
@@ -417,5 +468,15 @@ public class PersonsPanel extends javax.swing.JPanel {
         movies.forEach(movie -> allMovies.put(movie.getId(), movie));
     }
 
+    public void addMovieDirected(Movie movie){
+        if (moviesDirected.add(movie)) {
+            loadMovieDirectedModel();
+        }
+    }
     
+    public void addMovieActed(Movie movie){
+        if (moviesActed.add(movie)) {
+            loadMovieActedModel();
+        }
+    }
 }
