@@ -289,7 +289,9 @@ public class PersonsPanel extends javax.swing.JPanel {
             Person newCeleb = new Person(
                     tfFirstName.getText().trim(), 
                     tfLastName.getText().trim());
-            repo.createPerson(newCeleb);
+            int newId = repo.createPerson(newCeleb);
+            newCeleb.setId(newId);
+            addMovieInvolvements(newId);
             MessageUtils.showInformationMessage("Success!", "New celeb name has been added");
             loadPersonsModel();
         } catch (Exception ex) {
@@ -478,5 +480,13 @@ public class PersonsPanel extends javax.swing.JPanel {
         if (moviesActed.add(movie)) {
             loadMovieActedModel();
         }
+    }
+
+    private void addMovieInvolvements(int personId) {
+        List<Movie> moviesActed = lsActs.getSelectedValuesList();
+        List<Movie> moviesDirected = lsDirects.getSelectedValuesList();
+        
+       
+        
     }
 }

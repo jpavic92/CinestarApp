@@ -52,7 +52,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     private static final Random RANDOM = new  Random();
     
     private static final String ADD_MOVIE_TITLE = "Add movie";
-    private static final String EDIT_MOVIE_TITLE = "Edit movie";
+    private static final String EDIT_MOVIE_TITLE = "Update movie";
     
     private List<JTextComponent> validationsFields;
     private List<DefaultListModel> validationModels;
@@ -75,12 +75,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     private Repository repo;
     private Optional<Movie> optMovie = Optional.empty();
     private Movie selectedMovie;
-    private MoviesPanel parentPanel;
-    
-    //private boolean dataChagned = false;
-    //napraviti DnD - provjeriti vjezbe 11
-    //napraviti popup za genre
-
+    private final MoviesPanel parentPanel;
 
     /**
      * Creates new form EditMoviesDialog
@@ -423,9 +418,6 @@ public class EditMoviesDialog extends javax.swing.JDialog {
             Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to add/update the movie");
         }
-        
-        //dataChagned = true;
-
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
@@ -458,7 +450,6 @@ public class EditMoviesDialog extends javax.swing.JDialog {
             initForm();
             initValidation();
             initDragNDrop();
-            //initListener();
             loadAllPersonModel();
         } catch (Exception ex) {
             Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -583,9 +574,11 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         
         if (optMovie.isPresent()) {
             repo.updateMovie(selectedMovie.getId(), selectedMovie);
+            MessageUtils.showInformationMessage("Updated!", "Changes has been updated.");
         }
         else{
             repo.createMovie(selectedMovie);
+            MessageUtils.showInformationMessage("Success!", "New movie has been added");
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -664,34 +657,7 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         FileUtils.copy(path, localPosterPath);
         return localPosterPath;
     }
-
-    /*private void initListener() {
-    addWindowListener(new WindowAdapter() {
-    @Override
-    public void windowClosing(WindowEvent we) {
-    if (dataChagned) {
-    listeners.forEach(listener -> listener.refreshData());
-    }
-    }
     
-    @Override
-    public void windowDeactivated(WindowEvent we) {
-    if (dataChagned) {
-    listeners.forEach(listener -> listener.refreshData());
-    }
-    }
-    });
-    
-    addComponentListener(new ComponentAdapter() {
-    @Override
-    public void componentHidden(ComponentEvent ce) {
-    if (dataChagned) {
-    listeners.forEach(listener -> listener.refreshData());
-    }
-    }
-    
-    });
-    }*/
     private void initRepo() {
         repo = RepositoryFactory.getRepository();
     }

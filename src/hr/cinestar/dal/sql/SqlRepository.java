@@ -63,11 +63,13 @@ public class SqlRepository implements Repository {
 
     private static final String CREATE_MOVIE_INVOLVEMENT = "{ CALL createMovieInvolvement(?,?,?) }";
     private static final String DELETE_MOVIE_INVOLVEMENT = "{ CALL deleteMovieInvolvement(?,?,?) }";
+    private static final String DELETE_MOVIE_INVOLVEMENTS = "{ CALL deleteMovieInvolvements(?) }";
     private static final String SELECT_MOVIE_INVOLVEMENTS_BY_ROLEID = "{ CALL selectMovieInvolvementsByRoleId(?, ?) }"; //fetch all directors or actors of specified movie
     private static final String SELECT_INVOLVEMENTS = "{ CALL selectInvolvements() }"; //fetch all persons with involvements
 
     private static final String CREATE_GENRE = "{ CALL createGenre (?, ?) }";
     private static final String SELECT_MOVIE_GENRES = "{ CALL selectMovieGenres(?) }";
+    private static final String DELETE_MOVIE_GENRES = "{ CALL deleteMovieGenres(?) }";
     private static final String SELECT_GENRES = "{ CALL selectGenres() }";
     private static final String CREATE_MOVIEGENRE = "{ CALL createMovieGenre(?,?) }";
     
@@ -92,7 +94,7 @@ public class SqlRepository implements Repository {
             stmt.registerOutParameter(7, Types.INTEGER);
             stmt.executeUpdate();
             movieId = stmt.getInt(7);
-            createMovieGenre(movieId, movie.getGenres());
+            createMovieGenres(movieId, movie.getGenres());
             createMovieInvolvements(movieId, movie.getDirectors(), movie.getActors());
             
             return movieId;
@@ -117,6 +119,8 @@ public class SqlRepository implements Repository {
 
             stmt.executeUpdate();
 
+            updateMovieGenres(con, id, data.getGenres());
+            updateMovieInvolvements(con, id, data.getDirectors(), data.getActors());
         }
     }
 
@@ -467,6 +471,7 @@ public class SqlRepository implements Repository {
 
                 while (rs.next()) {
                     directors.add(new Person(
+                            rs.getInt(PERSON_ID),
                             rs.getString(PERSON_FIRSTNAME),
                             rs.getString(PERSON_LASTNAME)));
                 }
@@ -476,7 +481,7 @@ public class SqlRepository implements Repository {
     }
 
     @Override
-    public void createMovieGenre(int movieId, List<Genre> genres) throws Exception {
+    public void createMovieGenres(int movieId, List<Genre> genres) throws Exception {
         DataSource ds = DataSourceSingleton.getInstance();
 
         try (Connection con = ds.getConnection();
@@ -584,7 +589,7 @@ public class SqlRepository implements Repository {
             int genreId;
             
             for (Movie movie : movies) {
-                if (!movie.getGenres().isEmpty()) {
+                if (movie.getGenres() != null) {
                     for (Genre genre : movie.getGenres()) {
                         genreId = genres
                                 .stream()
@@ -620,7 +625,47 @@ public class SqlRepository implements Repository {
         }
         return moviesIds;
     }
+
+    private void updateMovieGenres(Connection con, int movieId, List<Genre> genres) throws Exception{
+        
+        try(CallableStatement stmt = con.prepareCall(DELETE_MOVIE_GENRES)) {
+            stmt.setInt(1, movieId);
+            stmt.executeUpdate();
+        } 
+
+        try (CallableStatement stmt = con.prepareCall(CREATE_MOVIEGENRE)){
+            for (Genre genre : genres) {
+                stmt.setInt(1, movieId);
+                stmt.setInt(2, genre.getId());
+                stmt.executeUpdate();
+            }
+        } 
+        
+    }
     
-    
+    private void updateMovieInvolvements(Connection con, int movieId, List<Person> directors, List<Person> actors) throws Exception{
+
+        try (CallableStatement stmt = con.prepareCall(DELETE_MOVIE_INVOLVEMENTS)){
+            stmt.setInt(1, movieId);
+            stmt.executeUpdate();
+        } 
+
+        try(CallableStatement stmt = con.prepareCall(CREATE_MOVIE_INVOLVEMENT)){
+            for (Person actor : actors) {
+                stmt.setInt(1, movieId);
+                stmt.setInt(2, actor.getId());
+                stmt.setInt(3, MovieRole.ACTOR.getRole());
+                stmt.executeUpdate();
+            }
+
+            for (Person director : directors) {
+                stmt.setInt(1, movieId);
+                stmt.setInt(2, director.getId());
+                stmt.setInt(3, MovieRole.DIRECTOR.getRole());
+                stmt.executeUpdate();
+            }
+        }
+        
+    }
 
 }
