@@ -735,12 +735,6 @@ public class EditMoviesDialog extends javax.swing.JDialog {
         }   
     }
     
-    public void addListener(PanelClosingListener listener){
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-    }
-    
     public void proba(){
         System.out.println("bok");
     }

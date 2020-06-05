@@ -22,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,8 +45,8 @@ public class PersonsPanel extends javax.swing.JPanel {
     
     private Person selectedPerson;
     private Map<Integer, Movie> allMovies;
-    private final Set<Movie> moviesDirected = new HashSet<>();
-    private final Set<Movie> moviesActed = new HashSet<>();
+    private final List<Movie> moviesDirected = new ArrayList<>();
+    private final List<Movie> moviesActed  = new ArrayList<>();
     
     private final DefaultListModel<Movie> moviesDirectedModel = new DefaultListModel<>();
     private final DefaultListModel<Movie> moviesActedModel = new DefaultListModel<>();
@@ -67,6 +68,7 @@ public class PersonsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup = new javax.swing.ButtonGroup();
         jLabel1 = new javax.swing.JLabel();
         tfFirstName = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -88,7 +90,12 @@ public class PersonsPanel extends javax.swing.JPanel {
         btnRemoveActed = new javax.swing.JButton();
         btnAddDirected = new javax.swing.JButton();
         btnRemoveDirected = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        tfFilterNames = new javax.swing.JTextField();
+        rbFirstName = new javax.swing.JRadioButton();
+        rbLastName = new javax.swing.JRadioButton();
 
+        setMaximumSize(new java.awt.Dimension(665, 430));
         setPreferredSize(new java.awt.Dimension(665, 430));
 
         jLabel1.setText("First name:");
@@ -174,21 +181,53 @@ public class PersonsPanel extends javax.swing.JPanel {
             }
         });
 
+        jLabel3.setText("Search by:");
+
+        tfFilterNames.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfFilterNamesKeyReleased(evt);
+            }
+        });
+
+        buttonGroup.add(rbFirstName);
+        rbFirstName.setSelected(true);
+        rbFirstName.setText("First name");
+        rbFirstName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbFilterNameActionPerformed(evt);
+            }
+        });
+
+        buttonGroup.add(rbLastName);
+        rbLastName.setText("Last name");
+        rbLastName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbFilterNameActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tfFilterNames, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rbFirstName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(rbLastName))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
                             .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(51, 51, 51)
+                .addGap(89, 89, 89)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,23 +260,12 @@ public class PersonsPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(39, 39, 39)
-                                .addComponent(lblFirstNameError, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(lblLastNameError, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd)
-                            .addComponent(btnUpdate))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnDelete))
+                        .addGap(39, 39, 39)
+                        .addComponent(lblFirstNameError, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblLastNameError, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -262,8 +290,24 @@ public class PersonsPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAddDirected)
-                            .addComponent(btnRemoveDirected))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnRemoveDirected)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(rbFirstName)
+                            .addComponent(rbLastName))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfFilterNames, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAdd)
+                            .addComponent(btnUpdate))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDelete)))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -284,20 +328,23 @@ public class PersonsPanel extends javax.swing.JPanel {
         if (!formValid()) {
             return;
         }
+        Person newCeleb = new Person(
+                tfFirstName.getText().trim(), 
+                tfLastName.getText().trim());
         
-        try {
-            Person newCeleb = new Person(
-                    tfFirstName.getText().trim(), 
-                    tfLastName.getText().trim());
-            int newId = repo.createPerson(newCeleb);
-            newCeleb.setId(newId);
-            addMovieInvolvements(newId);
-            MessageUtils.showInformationMessage("Success!", "New celeb name has been added");
-            loadPersonsModel();
-        } catch (Exception ex) {
-            Logger.getLogger(PersonsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage("Error!", "Unable to create new celeb.");
+        if (!persons.contains(newCeleb)) {
+            try {
+                int newId = repo.createPerson(newCeleb);
+                newCeleb.setId(newId);
+                addMovieInvolvements(newId);
+                MessageUtils.showInformationMessage("Success!", "New celeb name has been added");
+                loadPersonsModel();
+            } catch (Exception ex) {
+                Logger.getLogger(PersonsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage("Error!", "Unable to create new celeb.");
+            }
         }
+        else MessageUtils.showInformationMessage("Dublicate data", "Entered full name already exists in our database");
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
@@ -311,6 +358,7 @@ public class PersonsPanel extends javax.swing.JPanel {
                 selectedPerson.setFirstName(tfFirstName.getText().trim());
                 selectedPerson.setLastName(tfLastName.getText().trim());
                 repo.updatePerson(selectedPerson.getId(), selectedPerson);
+                addMovieInvolvements(selectedPerson.getId());
                 MessageUtils.showInformationMessage("Success!", "Data changed.");
                 loadPersonsModel();
             } catch (Exception ex) {
@@ -332,6 +380,7 @@ public class PersonsPanel extends javax.swing.JPanel {
                 repo.deletePerson(selectedPerson.getId());
                 MessageUtils.showInformationMessage("Success!", selectedPerson.toString() + " has been removed.");
                 loadPersonsModel();
+                clearForm();
             } catch (Exception ex) {
                 Logger.getLogger(PersonsPanel.class.getName()).log(Level.SEVERE, null, ex);
                 MessageUtils.showErrorMessage("Error!", "Unable to remove selected celeb.");
@@ -361,6 +410,16 @@ public class PersonsPanel extends javax.swing.JPanel {
         });
     }//GEN-LAST:event_btnRemoveDirectedActionPerformed
 
+    private void tfFilterNamesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfFilterNamesKeyReleased
+        filterPersons();
+    }//GEN-LAST:event_tfFilterNamesKeyReleased
+
+    private void rbFilterNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbFilterNameActionPerformed
+        if (!tfFilterNames.getText().isEmpty()) {
+            filterPersons();
+        }
+    }//GEN-LAST:event_rbFilterNameActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -370,8 +429,10 @@ public class PersonsPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnRemoveActed;
     private javax.swing.JButton btnRemoveDirected;
     private javax.swing.JButton btnUpdate;
+    private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
@@ -381,7 +442,10 @@ public class PersonsPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblLastNameError;
     private javax.swing.JList<Movie> lsActs;
     private javax.swing.JList<Movie> lsDirects;
+    private javax.swing.JRadioButton rbFirstName;
+    private javax.swing.JRadioButton rbLastName;
     private javax.swing.JTable tbPersons;
+    private javax.swing.JTextField tfFilterNames;
     private javax.swing.JTextField tfFirstName;
     private javax.swing.JTextField tfLastName;
     // End of variables declaration//GEN-END:variables
@@ -420,6 +484,16 @@ public class PersonsPanel extends javax.swing.JPanel {
     private void loadPersonsModel() throws Exception {
         persons = repo.selectPersons();
         personsModel.setPersons(persons);
+        filterPersons();
+    }
+    
+    private void filterPersons(){
+        List<Person> filtered = rbFirstName.isSelected() ?  
+                persons.stream().filter(person -> person.getFirstName().toLowerCase().startsWith(tfFilterNames.getText().toLowerCase().trim())).collect(Collectors.toList())
+                :
+                persons.stream().filter(person -> person.getLastName().toLowerCase().startsWith(tfFilterNames.getText().toLowerCase().trim())).collect(Collectors.toList());
+        
+        personsModel.setPersons(filtered);
     }
 
     private void initTable() throws Exception {
@@ -437,18 +511,19 @@ public class PersonsPanel extends javax.swing.JPanel {
         tfLastName.setText(selectedPerson.getLastName());
         loadMoviesDirected();
         loadMoviesActed();
-        loadMovieActedModel();
     }
     
      private void loadMoviesDirected() throws Exception {
-        List<Integer> moviesIds = repo.selectMoviesIdByPersonRole(selectedPerson.getId(), MovieRole.ACTOR.getRole());
-        moviesIds.forEach(id -> moviesActed.add(allMovies.get(id)));
+        List<Integer> moviesIds = repo.selectMoviesIdByPersonRole(selectedPerson.getId(), MovieRole.DIRECTOR.getRole());
+        moviesDirected.clear();
+        moviesIds.forEach(id -> moviesDirected.add(allMovies.get(id)));
         loadMovieDirectedModel();
     }
 
     private void loadMoviesActed() throws Exception {
-        List<Integer> moviesIds = repo.selectMoviesIdByPersonRole(selectedPerson.getId(), MovieRole.DIRECTOR.getRole());
-        moviesIds.forEach(id -> moviesDirectedModel.addElement(allMovies.get(id)));
+        List<Integer> moviesIds = repo.selectMoviesIdByPersonRole(selectedPerson.getId(), MovieRole.ACTOR.getRole());
+        moviesActed.clear();
+        moviesIds.forEach(id -> moviesActed.add(allMovies.get(id)));
         loadMovieActedModel();
     }
     
@@ -482,11 +557,16 @@ public class PersonsPanel extends javax.swing.JPanel {
         }
     }
 
-    private void addMovieInvolvements(int personId) {
-        List<Movie> moviesActed = lsActs.getSelectedValuesList();
-        List<Movie> moviesDirected = lsDirects.getSelectedValuesList();
-        
-       
-        
+    private void addMovieInvolvements(int personId) throws Exception {
+        repo.createPersonsInvolvements(personId, moviesDirected, moviesActed);
+    }
+
+    private void clearForm() {
+        tfFirstName.setText("");
+        tfLastName.setText("");
+        moviesActed.clear();
+        loadMovieActedModel();
+        moviesDirected.clear();
+        loadMovieDirectedModel();
     }
 }

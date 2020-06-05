@@ -8,6 +8,7 @@ package hr.cinestar.dal;
 import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
 import hr.cinestar.model.Person;
+import hr.cinestar.model.User;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,10 +43,14 @@ public interface Repository {
     
     //MovieRoles
     void createMovieInvolvements(int movieId, List<Person> directors, List<Person> actors) throws Exception;
+    void createPersonsInvolvements(int personId, List<Movie> directed, List<Movie> acted) throws Exception;
     void deleteMovieInvolvement(int movieId, int personId, int roleId) throws Exception;
     List<Person> selectMovieInvolvementsByRoleId(int movieId, int roleId) throws Exception;
     List<Person> selectInvolvements() throws Exception;
     
     void initialEntityCreation(Set<Person> persons, Set<Genre> genres, List<Movie> movies) throws Exception;
+    
+    void createUser(User user) throws Exception;
+    boolean userExits(User user) throws Exception;
 
 }

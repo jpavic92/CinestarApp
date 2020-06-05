@@ -10,6 +10,7 @@ import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
 import hr.cinestar.model.MovieRole;
 import hr.cinestar.model.Person;
+import hr.cinestar.model.User;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -63,7 +64,8 @@ public class SqlRepository implements Repository {
 
     private static final String CREATE_MOVIE_INVOLVEMENT = "{ CALL createMovieInvolvement(?,?,?) }";
     private static final String DELETE_MOVIE_INVOLVEMENT = "{ CALL deleteMovieInvolvement(?,?,?) }";
-    private static final String DELETE_MOVIE_INVOLVEMENTS = "{ CALL deleteMovieInvolvements(?) }";
+    private static final String DELETE_MOVIE_INVOLVEMENTS_BY_MOVIE = "{ CALL deleteMovieInvolvementsByMovieId(?) }";
+    private static final String DELETE_MOVIE_INVOLVEMENTS_BY_PERSON = "{ CALL deleteMovieInvolvementsByPersonId(?) }";
     private static final String SELECT_MOVIE_INVOLVEMENTS_BY_ROLEID = "{ CALL selectMovieInvolvementsByRoleId(?, ?) }"; //fetch all directors or actors of specified movie
     private static final String SELECT_INVOLVEMENTS = "{ CALL selectInvolvements() }"; //fetch all persons with involvements
 
@@ -72,6 +74,9 @@ public class SqlRepository implements Repository {
     private static final String DELETE_MOVIE_GENRES = "{ CALL deleteMovieGenres(?) }";
     private static final String SELECT_GENRES = "{ CALL selectGenres() }";
     private static final String CREATE_MOVIEGENRE = "{ CALL createMovieGenre(?,?) }";
+    
+    private static final String CREATE_USER = "{ CALL createUsers(?,?) }";
+    private static final String USER_EXISTS = "{ CALL userExists(?,?,?) }";
     
     private static final String DELETE_ALL_DATA = "{ CALL deleteAllData () }";
     
@@ -645,7 +650,7 @@ public class SqlRepository implements Repository {
     
     private void updateMovieInvolvements(Connection con, int movieId, List<Person> directors, List<Person> actors) throws Exception{
 
-        try (CallableStatement stmt = con.prepareCall(DELETE_MOVIE_INVOLVEMENTS)){
+        try (CallableStatement stmt = con.prepareCall(DELETE_MOVIE_INVOLVEMENTS_BY_MOVIE)){
             stmt.setInt(1, movieId);
             stmt.executeUpdate();
         } 
@@ -666,6 +671,66 @@ public class SqlRepository implements Repository {
             }
         }
         
+    }
+
+    @Override
+    public void createPersonsInvolvements(int personId, List<Movie> directed, List<Movie> acted) throws Exception {
+        DataSource ds = DataSourceSingleton.getInstance();
+        
+        try(Connection con = ds.getConnection()){
+            
+           CallableStatement stmt = con.prepareCall(DELETE_MOVIE_INVOLVEMENTS_BY_PERSON);
+                stmt.setInt(1, personId);
+                stmt.executeUpdate();
+            
+        
+                stmt = con.prepareCall(CREATE_MOVIE_INVOLVEMENT);
+
+                for (Movie movie : directed) {
+                    stmt.setInt(1, movie.getId());
+                    stmt.setInt(2, personId);
+                    stmt.setInt(3, MovieRole.DIRECTOR.getRole());
+                    stmt.executeUpdate();
+                }
+                
+                for (Movie movie : acted) {
+                    stmt.setInt(1, movie.getId());
+                    stmt.setInt(2, personId);
+                    stmt.setInt(3, MovieRole.ACTOR.getRole());
+                    stmt.executeUpdate();
+                }
+            
+        }
+    }
+
+    @Override
+    public void createUser(User user) throws Exception {
+        DataSource ds = DataSourceSingleton.getInstance();
+        
+        try(Connection con = ds.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_USER)){
+            
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getUsername());
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public boolean userExits(User user) throws Exception {
+        DataSource ds = DataSourceSingleton.getInstance();
+        
+        try(Connection con = ds.getConnection();
+                CallableStatement stmt = con.prepareCall(USER_EXISTS)){
+            
+            stmt.setString(1, user.getUsername());
+            stmt.setString(1, user.getPassword());
+            stmt.registerOutParameter(3, Types.INTEGER);
+            
+            stmt.executeUpdate();
+            
+            return stmt.getInt(3) == 1 ? true : false;
+        }
     }
 
 }

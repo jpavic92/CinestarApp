@@ -49,8 +49,6 @@ public class MoviesPanel extends javax.swing.JPanel {
     List<Movie> filteredByGenre = new ArrayList<>();
     private List<JTextComponent> textFields;
     private Movie selectedMovie;
-    private boolean changes = false;
-    
     
 
     /**
@@ -596,20 +594,4 @@ public class MoviesPanel extends javax.swing.JPanel {
             Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         }
-    
-    public void setChanges(boolean changes){
-        this.changes = changes;
-    }
-
-    /*  private class MoviePanelClosingListener implements PanelClosingListener {
-    
-    public MoviePanelClosingListener() {
-    }
-    
-    @Override
-    public void refreshData() {
-    clearForm();
-    loadTableModel();
-    }
-    }*/
 }
