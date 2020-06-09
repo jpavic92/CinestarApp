@@ -24,17 +24,13 @@ public enum MovieRole {
         return roleN;
     }
 
-    public MovieRole from (int role){
+    public static MovieRole from (int role){
         switch(role){
             case 1:
                 return DIRECTOR;
             case 2:
                 return ACTOR;
         }
-        return null; // ?
+        return ACTOR;
     }
-    
-    
-    
-
 }

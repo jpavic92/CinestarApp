@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import hr.cinestar.model.MovieTableModel;
-import hr.cinestar.model.PanelClosingListener;
 import hr.cinestar.model.Person;
 import java.awt.Desktop;
 import java.awt.event.ItemEvent;

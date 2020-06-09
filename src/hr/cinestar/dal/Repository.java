@@ -50,7 +50,11 @@ public interface Repository {
     
     void initialEntityCreation(Set<Person> persons, Set<Genre> genres, List<Movie> movies) throws Exception;
     
+    List<User> selectUsers() throws Exception;
     void createUser(User user) throws Exception;
-    boolean userExits(User user) throws Exception;
+    int userExits(User user) throws Exception;
+    boolean usernameExits(String username) throws Exception;
+    
+    void deleteAllData() throws Exception;
 
 }

@@ -5,12 +5,13 @@
  */
 package hr.algebra.gui;
 
+import com.sun.glass.events.KeyEvent;
 import hr.algebra.utils.MessageUtils;
 import hr.cinestar.dal.Repository;
 import hr.cinestar.dal.RepositoryFactory;
 import hr.cinestar.model.User;
+import hr.cinestar.model.UserRole;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -18,26 +19,25 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
 /**
  *
  * @author Josip
  */
-public class SignInPanel extends javax.swing.JPanel {
+public class RegisterPanel extends javax.swing.JPanel {
     
     private Repository repo;
     
     private List<JTextField> validationFields;
     private List<JLabel> errorLabels;
     private final LoginForm parent;
-    private int userExists;
+    
 
     /**
      * Creates new form SignInPanel
      * @param parent
      */
-    public SignInPanel(JFrame parent) {
+    public RegisterPanel(JFrame parent) {
         initComponents();
         this.parent = (LoginForm)parent;
         init();
@@ -55,11 +55,14 @@ public class SignInPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         tfUsername = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        btnSignIn = new javax.swing.JButton();
-        lblRegister = new javax.swing.JLabel();
+        bntRegister = new javax.swing.JButton();
+        lblSingIn = new javax.swing.JLabel();
         lblUsernameError = new javax.swing.JLabel();
         lblPasswordError = new javax.swing.JLabel();
         pfPassword = new javax.swing.JPasswordField();
+        jLabel3 = new javax.swing.JLabel();
+        lblPasswordReError = new javax.swing.JLabel();
+        pfPasswordRe = new javax.swing.JPasswordField();
 
         setPreferredSize(new java.awt.Dimension(630, 420));
 
@@ -68,30 +71,30 @@ public class SignInPanel extends javax.swing.JPanel {
         tfUsername.setName("username"); // NOI18N
         tfUsername.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                SignInPanel.this.keyReleased(evt);
+                RegisterPanel.this.keyReleased(evt);
             }
         });
 
         jLabel2.setText("Password:");
 
-        btnSignIn.setText("Sign in");
-        btnSignIn.addActionListener(new java.awt.event.ActionListener() {
+        bntRegister.setText("Register");
+        bntRegister.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSignInActionPerformed(evt);
+                bntRegisterActionPerformed(evt);
             }
         });
 
-        lblRegister.setForeground(new java.awt.Color(0, 0, 255));
-        lblRegister.setText("Register");
-        lblRegister.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblSingIn.setForeground(new java.awt.Color(0, 0, 255));
+        lblSingIn.setText("Sign in");
+        lblSingIn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                lblRegisterMouseEntered(evt);
+                lblSingInMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                lblRegisterMouseExited(evt);
+                lblSingInMouseExited(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                lblRegisterMouseReleased(evt);
+                lblSingInMouseReleased(evt);
             }
         });
 
@@ -102,7 +105,18 @@ public class SignInPanel extends javax.swing.JPanel {
         pfPassword.setName("password"); // NOI18N
         pfPassword.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                SignInPanel.this.keyReleased(evt);
+                RegisterPanel.this.keyReleased(evt);
+            }
+        });
+
+        jLabel3.setText("Retype password:");
+
+        lblPasswordReError.setForeground(new java.awt.Color(255, 0, 0));
+
+        pfPasswordRe.setName("passwordRe"); // NOI18N
+        pfPasswordRe.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                RegisterPanel.this.keyReleased(evt);
             }
         });
 
@@ -111,7 +125,7 @@ public class SignInPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(135, 135, 135)
+                .addGap(102, 102, 102)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -122,19 +136,24 @@ public class SignInPanel extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblRegister)
+                        .addComponent(lblSingIn)
                         .addGap(18, 18, 18)
-                        .addComponent(btnSignIn)))
+                        .addComponent(bntRegister))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(pfPasswordRe, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblUsernameError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblPasswordError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(203, Short.MAX_VALUE))
+                    .addComponent(lblPasswordError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPasswordReError, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(196, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(111, 111, 111)
+                .addGap(87, 87, 87)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -144,61 +163,74 @@ public class SignInPanel extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(pfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnSignIn)
-                            .addComponent(lblRegister)))
+                            .addComponent(pfPasswordRe, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(bntRegister)
+                            .addComponent(lblSingIn)))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblUsernameError, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)
+                        .addComponent(lblPasswordError, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(lblPasswordError, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(209, Short.MAX_VALUE))
+                        .addComponent(lblPasswordReError, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(204, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSignInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignInActionPerformed
-       handleInput();
-    }//GEN-LAST:event_btnSignInActionPerformed
+    private void bntRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntRegisterActionPerformed
+        handleInput();
+    }//GEN-LAST:event_bntRegisterActionPerformed
 
-    private void lblRegisterMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegisterMouseEntered
-        lblRegister.setForeground(Color.ORANGE);
-    }//GEN-LAST:event_lblRegisterMouseEntered
+    private void lblSingInMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSingInMouseEntered
+        lblSingIn.setForeground(Color.ORANGE);
+    }//GEN-LAST:event_lblSingInMouseEntered
 
-    private void lblRegisterMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegisterMouseExited
-        lblRegister.setForeground(Color.blue);
-    }//GEN-LAST:event_lblRegisterMouseExited
+    private void lblSingInMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSingInMouseExited
+        lblSingIn.setForeground(Color.blue);
+    }//GEN-LAST:event_lblSingInMouseExited
 
-    private void lblRegisterMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegisterMouseReleased
-       parent.setRegisterPanel();
-    }//GEN-LAST:event_lblRegisterMouseReleased
+    private void lblSingInMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblSingInMouseReleased
+       parent.setSignInPanel();
+    }//GEN-LAST:event_lblSingInMouseReleased
 
     private void keyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_keyReleased
-         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             handleInput();
         }
-         else{
-             String componentName = evt.getComponent().getName();
+        else{
+            String componentName = evt.getComponent().getName();
              if (null != componentName) switch (componentName) {
-                 case "username":
-                     lblUsernameError.setText(validationFields.get(0).getText().isEmpty() ? "X" : "");
-                     break;
-                 case "password":
-                     lblPasswordError.setText(validationFields.get(1).getText().isEmpty() ? "X" : "");
-                     break;
-                 default:
-                     break;
-             }
-         }
+                case "username":
+                    lblUsernameError.setText(validationFields.get(0).getText().isEmpty() ? "X" : "");
+                    break;
+                case "password":
+                    lblPasswordError.setText(validationFields.get(1).getText().isEmpty() ? "X" : "");
+                    break;
+                case "passwordRe":
+                    lblPasswordReError.setText(validationFields.get(2).getText().isEmpty() ? "X" : "");
+                    break;
+                default:
+                    break;
+            }
+        }
     }//GEN-LAST:event_keyReleased
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSignIn;
+    private javax.swing.JButton bntRegister;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel lblPasswordError;
-    private javax.swing.JLabel lblRegister;
+    private javax.swing.JLabel lblPasswordReError;
+    private javax.swing.JLabel lblSingIn;
     private javax.swing.JLabel lblUsernameError;
     private javax.swing.JPasswordField pfPassword;
+    private javax.swing.JPasswordField pfPasswordRe;
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
@@ -208,8 +240,8 @@ public class SignInPanel extends javax.swing.JPanel {
     }
 
     private void initValidation() {
-        validationFields = Arrays.asList(tfUsername, pfPassword);
-        errorLabels = Arrays.asList(lblUsernameError, lblPasswordError);
+        validationFields = Arrays.asList(tfUsername, pfPassword, pfPasswordRe);
+        errorLabels = Arrays.asList(lblUsernameError, lblPasswordError, lblPasswordReError);
     }
 
     private boolean formValid() {
@@ -220,6 +252,10 @@ public class SignInPanel extends javax.swing.JPanel {
             errorLabels.get(i).setText(validationFields.get(i).getText().isEmpty() ? "X" : "");
         }
         
+        if (ok == true) {
+            ok &= Arrays.equals(pfPassword.getPassword(), pfPasswordRe.getPassword());
+            lblPasswordReError.setText(Arrays.equals(pfPassword.getPassword(), pfPasswordRe.getPassword()) ? "" : "X");
+        }
         return ok;
     }
 
@@ -227,33 +263,31 @@ public class SignInPanel extends javax.swing.JPanel {
         repo = RepositoryFactory.getRepository();
     }
 
-    private boolean authenticateUser() throws Exception {
-        User user = new User(tfUsername.getText().trim(), pfPassword.getPassword());
-        userExists = repo.userExits(user);
-        return userExists == 0 ? false : true;
+    private boolean registerNewUser() throws Exception {
+        
+        User user = new User (tfUsername.getText().trim(), pfPassword.getPassword(), UserRole.USER); 
+        if (!repo.usernameExits(user.getUsername())) {
+            repo.createUser(user);
+            return true;
+        }
+        return false;
     }
+
     private void handleInput() {
         if(!formValid()){
             return;
         }
         
         try {
-            if (authenticateUser()) {
-                if (userExists == 2) {
-                    new UserFrame().setVisible(true);
-                    parent.dispose();
-                    
-                }
-                else{
-                    new AdminFrame().setVisible(true);
-                    parent.dispose();
-                }
+            if(registerNewUser()){
+                MessageUtils.showInformationMessage("Success!", "You have been registered.");
+                parent.setSignInPanel();
             }
-            else MessageUtils.showInformationMessage("Authenicaton failed", "Entered username or password does now match.");
+            else MessageUtils.showInformationMessage("Username exists", "Entered username already exists.");
+            
         } catch (Exception ex) {
             Logger.getLogger(PersonsPanel.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage("Authentication failed", "Unable to authenticate the user.");
+            MessageUtils.showErrorMessage("Authentication failed", "Unable to register new user.");
         }
     }
-
 }

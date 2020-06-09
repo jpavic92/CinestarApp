@@ -5,18 +5,34 @@
  */
 package hr.cinestar.model;
 
+import java.util.Arrays;
+
 /**
  *
  * @author Josip
  */
 public class User {
+    
     private final String username;
     private final Integer password;
+    private UserRole userRole;
     
-    public User (String username, String password){
+    public User (String username, char[] password){
         this.username = username;
-        this.password = password.hashCode();
+        this.password = Arrays.hashCode(password);
     }
+    
+    public User (String username, char[] password, UserRole role){
+        this.username = username;
+        this.password = Arrays.hashCode(password);
+        userRole = role;
+    } 
+    
+    public User (String username, Integer password, UserRole role){
+        this.username = username;
+        this.password = password;
+        userRole = role;
+    } 
 
     public String getUsername() {
         return username;
@@ -26,6 +42,16 @@ public class User {
         return password.toString();
     }
     
-    
+    public UserRole getRole(){
+        return userRole;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof User) {
+            return ((User)o).getUsername().equals(username);
+        }
+        return false;
+    }
     
 }

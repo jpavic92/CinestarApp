@@ -13,8 +13,13 @@ import hr.cinestar.dal.sql.SqlRepository;
  */
 public class RepositoryFactory {
     
+    private static final Repository INSTANCE = new SqlRepository();
+    
     public static Repository getRepository(){
-        return new SqlRepository();
+        return INSTANCE;
+    }
+
+    private RepositoryFactory() {
     }
     
 }

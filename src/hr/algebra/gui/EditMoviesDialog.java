@@ -13,7 +13,6 @@ import hr.cinestar.dal.Repository;
 import hr.cinestar.dal.RepositoryFactory;
 import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
-import hr.cinestar.model.PanelClosingListener;
 import hr.cinestar.model.Person;
 import hr.cinestar.model.PersonTransferable;
 import java.awt.datatransfer.Transferable;
@@ -56,8 +55,6 @@ public class EditMoviesDialog extends javax.swing.JDialog {
     
     private List<JTextComponent> validationsFields;
     private List<DefaultListModel> validationModels;
-    
-    private List<PanelClosingListener> listeners = new ArrayList<>();
     
     private List<JLabel> fieldErrorLabels;
     private List<JLabel> modelErrorLables;

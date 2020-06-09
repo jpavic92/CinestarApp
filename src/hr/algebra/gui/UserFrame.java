@@ -6,24 +6,27 @@
 package hr.algebra.gui;
 
 import hr.algebra.utils.MessageUtils;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author Josip
  */
-public class TestContainer extends javax.swing.JFrame{
+public class UserFrame extends javax.swing.JFrame{
     
     private MoviesPanel mp;
     private PersonsPanel pp;
+    private SignInPanel sip;
     private static final Dimension MOVIE_PANEL_DIM = new Dimension(930, 850);
     private static final Dimension PERSONS_PANEL_DIM = new Dimension(730, 560);
 
     /**
      * Creates new form TestContainer
      */
-    public TestContainer() {
+    public UserFrame() {
         initComponents();
         init();
     }
@@ -39,7 +42,8 @@ public class TestContainer extends javax.swing.JFrame{
 
         jMenuBar2 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        miSignOut = new javax.swing.JMenuItem();
+        miExit = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
@@ -48,13 +52,21 @@ public class TestContainer extends javax.swing.JFrame{
 
         jMenu3.setText("File");
 
-        jMenuItem1.setText("Exit");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        miSignOut.setText("Sign out");
+        miSignOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                miSignOutActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem1);
+        jMenu3.add(miSignOut);
+
+        miExit.setText("Exit");
+        miExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miExitActionPerformed(evt);
+            }
+        });
+        jMenu3.add(miExit);
 
         jMenuBar2.add(jMenu3);
 
@@ -108,11 +120,18 @@ public class TestContainer extends javax.swing.JFrame{
         pp.setVisible(true);
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
         if (MessageUtils.showConfirmationMessage("Exit application", "Are you sure?") == JOptionPane.YES_OPTION) {
             this.dispose();
         }
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_miExitActionPerformed
+
+    private void miSignOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miSignOutActionPerformed
+        if (MessageUtils.showConfirmationMessage("Sign out", "You will be signed out") == JOptionPane.YES_OPTION) {
+            new LoginForm().setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_miSignOutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -131,20 +150,21 @@ public class TestContainer extends javax.swing.JFrame{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TestContainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TestContainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TestContainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TestContainer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UserFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TestContainer().setVisible(true);
+                new UserFrame().setVisible(true);
             }
         });
     }
@@ -155,9 +175,10 @@ public class TestContainer extends javax.swing.JFrame{
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar2;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem miExit;
+    private javax.swing.JMenuItem miSignOut;
     // End of variables declaration//GEN-END:variables
 
     private void init() {
@@ -165,8 +186,7 @@ public class TestContainer extends javax.swing.JFrame{
         setupPanels();
     }
     
-    private void setupPanels() {
-        //tbContent.add("Cinestar movies", new MoviesPanel());
+    public void setupPanels() {
         mp = new MoviesPanel();
         mp.setSize(new Dimension(this.getWidth(), this.getHeight() - 60));
         this.add("Cinestar movies", mp);

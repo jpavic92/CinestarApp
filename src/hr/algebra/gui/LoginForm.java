@@ -11,7 +11,8 @@ package hr.algebra.gui;
  */
 public class LoginForm extends javax.swing.JFrame {
     
-    private SignInPanel signIn;
+    private SignInPanel sip;
+    private RegisterPanel rp;
 
     /**
      * Creates new form LoginForm
@@ -31,16 +32,17 @@ public class LoginForm extends javax.swing.JFrame {
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Welcome to Cinestar movies");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 702, Short.MAX_VALUE)
+            .addGap(0, 545, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 490, Short.MAX_VALUE)
+            .addGap(0, 316, Short.MAX_VALUE)
         );
 
         pack();
@@ -83,9 +85,21 @@ public class LoginForm extends javax.swing.JFrame {
     }
 
     private void init() {
-        signIn  = new SignInPanel();
-        signIn.setSize(this.getWidth(), this.getHeight());
-        this.add("Login", signIn);
+        sip  = new SignInPanel(this);
+        sip.setSize(this.getSize());
+        this.add("Login", sip);
+    }
+
+    void setRegisterPanel() {
+        rp = new RegisterPanel(this);
+        rp.setSize(this.getSize());
+        add(rp);
+        sip.setVisible(false);
+    }
+
+    void setSignInPanel() {
+        rp.setVisible(false);
+        sip.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

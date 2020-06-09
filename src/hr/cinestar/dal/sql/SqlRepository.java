@@ -11,6 +11,7 @@ import hr.cinestar.model.Movie;
 import hr.cinestar.model.MovieRole;
 import hr.cinestar.model.Person;
 import hr.cinestar.model.User;
+import hr.cinestar.model.UserRole;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -45,6 +46,12 @@ public class SqlRepository implements Repository {
 
     private static final String GENRE_ID = "IDGenre";
     private static final String GENRE_NAME = "GenreName";
+    
+    private static final String USERNAME = "Username";
+    private static final String PASSWORD = "Password";
+    private static final String USER_ROLEID = "UserRoleId";
+    
+    
 
     //SQL procedures calls
     //Movie
@@ -75,8 +82,10 @@ public class SqlRepository implements Repository {
     private static final String SELECT_GENRES = "{ CALL selectGenres() }";
     private static final String CREATE_MOVIEGENRE = "{ CALL createMovieGenre(?,?) }";
     
-    private static final String CREATE_USER = "{ CALL createUsers(?,?) }";
+    private static final String CREATE_USER = "{ CALL createUser(?,?,?) }";
     private static final String USER_EXISTS = "{ CALL userExists(?,?,?) }";
+    private static final String USERNAME_EXISTS = "{ CALL usernameExists(?, ?) }";
+    private static final String SELECT_USERS = "{CALL selectUsers() }"; 
     
     private static final String DELETE_ALL_DATA = "{ CALL deleteAllData () }";
     
@@ -711,25 +720,72 @@ public class SqlRepository implements Repository {
                 CallableStatement stmt = con.prepareCall(CREATE_USER)){
             
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getUsername());
+            stmt.setString(2, user.getPassword());
+            stmt.setInt(3, user.getRole().getRoleId());
             stmt.executeUpdate();
         }
     }
 
     @Override
-    public boolean userExits(User user) throws Exception {
+    public int userExits(User user) throws Exception {
         DataSource ds = DataSourceSingleton.getInstance();
         
         try(Connection con = ds.getConnection();
                 CallableStatement stmt = con.prepareCall(USER_EXISTS)){
             
             stmt.setString(1, user.getUsername());
-            stmt.setString(1, user.getPassword());
+            stmt.setString(2, user.getPassword());
             stmt.registerOutParameter(3, Types.INTEGER);
             
             stmt.executeUpdate();
             
-            return stmt.getInt(3) == 1 ? true : false;
+            return stmt.getInt(3);
+        }
+    }
+
+    @Override
+    public List<User> selectUsers() throws Exception {
+        DataSource ds = DataSourceSingleton.getInstance();
+        List<User> users = new ArrayList<>();
+        
+        try(Connection con = ds.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_USERS)){
+            
+            ResultSet rs = stmt.executeQuery();
+            
+            while (rs.next()) {                
+                users.add(new User(
+                        rs.getString(USERNAME), 
+                        (Integer)rs.getInt(PASSWORD), 
+                        UserRole.from(rs.getInt(USER_ROLEID))));
+            }
+            
+        }
+        return users;
+    }
+
+    @Override
+    public boolean usernameExits(String username) throws Exception {
+        DataSource ds = DataSourceSingleton.getInstance();
+        
+        try(Connection con = ds.getConnection();
+                CallableStatement stmt = con.prepareCall(USERNAME_EXISTS)){
+            
+            stmt.setString(1, username);
+            stmt.registerOutParameter(2, Types.INTEGER); 
+            stmt.executeUpdate();
+            
+            return stmt.getInt(2) == 1 ? true : false;
+        }
+    }
+
+    @Override
+    public void deleteAllData() throws Exception {
+        DataSource ds = DataSourceSingleton.getInstance();
+        
+        try(Connection con = ds.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_ALL_DATA)){
+            stmt.executeUpdate();
         }
     }
 
