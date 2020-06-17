@@ -419,15 +419,16 @@ public class EditMoviesDialog extends javax.swing.JDialog {
 
     private void btnChooseImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseImageActionPerformed
         File file = FileUtils.uploadFile("Upload image", "jpg", "jpeg", "png");
-        
-        try {
-            IconUtils.createIcon(file.getAbsolutePath(), 100, 100);
-            tfPosterPath.setText(file.getAbsolutePath());
-            lblPosterPathError.setText("");
-        } catch (Exception ex) {
-            Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
-            lblPosterPathError.setText("X");
-            MessageUtils.showErrorMessage("Corrupted file", "Unable to load choosen file");
+        if (file != null) {
+            try {
+                IconUtils.createIcon(file.getAbsolutePath(), 100, 100);
+                tfPosterPath.setText(file.getAbsolutePath());
+                lblPosterPathError.setText("");
+            } catch (Exception ex) {
+                Logger.getLogger(EditMoviesDialog.class.getName()).log(Level.SEVERE, null, ex);
+                lblPosterPathError.setText("X");
+                MessageUtils.showErrorMessage("Corrupted file", "Unable to load choosen file");
+            }
         }
     }//GEN-LAST:event_btnChooseImageActionPerformed
 

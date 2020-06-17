@@ -6,14 +6,20 @@
 package hr.cinestar.model;
 
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Josip
  */
+@XmlRootElement (name = "genre")
 public class Genre {
     private int id;
     private String name;
+    
+    public Genre(){}
 
     public Genre(int id, String name) {
         this(name);
@@ -24,6 +30,7 @@ public class Genre {
         this.name = name;
     }
 
+    @XmlAttribute (name = "id")
     public int getId() {
         return id;
     }
@@ -32,6 +39,7 @@ public class Genre {
         this.id = id;
     }
 
+    @XmlElement (name = "name")
     public String getName() {
         return name;
     }

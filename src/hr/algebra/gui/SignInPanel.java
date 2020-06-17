@@ -255,5 +255,4 @@ public class SignInPanel extends javax.swing.JPanel {
             MessageUtils.showErrorMessage("Authentication failed", "Unable to authenticate the user.");
         }
     }
-
 }

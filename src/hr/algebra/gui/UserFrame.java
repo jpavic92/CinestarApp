@@ -20,8 +20,8 @@ public class UserFrame extends javax.swing.JFrame{
     private MoviesPanel mp;
     private PersonsPanel pp;
     private SignInPanel sip;
-    private static final Dimension MOVIE_PANEL_DIM = new Dimension(930, 850);
-    private static final Dimension PERSONS_PANEL_DIM = new Dimension(730, 560);
+    private static final Dimension MOVIE_PANEL_DIM = new Dimension(1050, 900);
+    private static final Dimension PERSONS_PANEL_DIM = new Dimension(730, 600);
 
     /**
      * Creates new form TestContainer

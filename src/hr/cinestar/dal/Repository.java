@@ -19,7 +19,6 @@ import java.util.Set;
  */
 public interface Repository {
     //CRUD movie
-    
     int createMovie(Movie movie) throws Exception;
     void createMovies(List<Movie> movies) throws Exception;
     void updateMovie(int id, Movie data) throws Exception;
@@ -50,11 +49,11 @@ public interface Repository {
     
     void initialEntityCreation(Set<Person> persons, Set<Genre> genres, List<Movie> movies) throws Exception;
     
+    //AppUser
     List<User> selectUsers() throws Exception;
     void createUser(User user) throws Exception;
     int userExits(User user) throws Exception;
     boolean usernameExits(String username) throws Exception;
     
     void deleteAllData() throws Exception;
-
 }

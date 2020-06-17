@@ -38,8 +38,8 @@ import javax.swing.text.JTextComponent;
  * @author Josip
  */
 public class MoviesPanel extends javax.swing.JPanel {
-    
-    private static final String DEFAULT_POSTER_PATH = "/assets/fimlstrip.jpg";
+    private static final String DEFAULT_POSTER_PATH = "/assets/filmrole.png";
+    private static final String CORRUPTED_ICON = "/assets/corrupted.jpg";
     private Repository repo;
     private MovieTableModel movieModel;
     
@@ -93,6 +93,16 @@ public class MoviesPanel extends javax.swing.JPanel {
         taActors = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
         tfFilter = new javax.swing.JTextField();
+
+        addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+                formAncestorAdded(evt);
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+        });
 
         tblMovies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -173,6 +183,7 @@ public class MoviesPanel extends javax.swing.JPanel {
             }
         });
 
+        taDescription.setEditable(false);
         taDescription.setColumns(20);
         taDescription.setLineWrap(true);
         taDescription.setRows(5);
@@ -197,7 +208,7 @@ public class MoviesPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(42, 42, 42)
+                .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel8)
@@ -231,7 +242,7 @@ public class MoviesPanel extends javax.swing.JPanel {
                         .addComponent(lblTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -239,17 +250,17 @@ public class MoviesPanel extends javax.swing.JPanel {
                                     .addComponent(jLabel1)
                                     .addGap(18, 18, 18)
                                     .addComponent(cbFilterGenre, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(lblPoster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel2)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(tfFilter))))
-                        .addGap(54, 54, 54))))
+                                    .addComponent(tfFilter))
+                                .addComponent(lblPoster, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(60, 60, 60))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -299,17 +310,17 @@ public class MoviesPanel extends javax.swing.JPanel {
                             .addComponent(tfFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33))))
+                        .addGap(45, 45, 45))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void tblMoviesMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMoviesMouseReleased
-        clearForm();
         
         int selectedRow = tblMovies.getSelectedRow();
         int movieId = (int)tblMovies.getValueAt(selectedRow, 0);
         
         try {
+            clearForm();
             Optional<Movie> optMovie = repo.selectMovie(movieId);
             selectedMovie = optMovie.get();
             fillForm();
@@ -397,6 +408,11 @@ public class MoviesPanel extends javax.swing.JPanel {
         }
         new EditMoviesDialog((JFrame)this.getRootPane().getParent(), true, this, selectedMovie)
                 .setVisible(true);
+        try {
+            fillForm();
+        } catch (IOException ex) {
+            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void tfFilterKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfFilterKeyReleased
@@ -412,6 +428,14 @@ public class MoviesPanel extends javax.swing.JPanel {
             listToFilter.stream().filter(movie -> movie.getTitle().toLowerCase().startsWith(tfFilter.getText().toLowerCase().trim())).forEach(movie -> filteredByLetters.add(movie));
             movieModel.setMovies(filteredByLetters);
     }//GEN-LAST:event_tfFilterKeyReleased
+
+    private void formAncestorAdded(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_formAncestorAdded
+        try {
+            clearForm();
+        } catch (IOException ex) {
+            Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formAncestorAdded
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -476,10 +500,12 @@ public class MoviesPanel extends javax.swing.JPanel {
         movieModel.setMovies(movies);
     }
 
-    private void clearForm() {
+    private void clearForm() throws IOException {
         textFields.forEach(field -> field.setText(""));
+        lblTitle.setText("");
         selectedMovie = null;
-        //set default icon
+        ImageIcon poster = IconUtils.createIcon(getClass().getResource(DEFAULT_POSTER_PATH), lblPoster.getWidth(), lblPoster.getHeight());
+        lblPoster.setIcon(poster);
         
     }
 
@@ -503,7 +529,6 @@ public class MoviesPanel extends javax.swing.JPanel {
         tfGenres.setText(setGenres());
         
         handlePoster();
-        
     }
 
     private String setActors() {
@@ -566,13 +591,12 @@ public class MoviesPanel extends javax.swing.JPanel {
     }
 
     private void handlePoster() throws IOException {
-        
-       
-        ImageIcon poster = IconUtils.createIcon(selectedMovie.getPosterPath(), lblPoster.getWidth(), lblPoster.getHeight());
         try {
+            ImageIcon poster = IconUtils.createIcon(selectedMovie.getPosterPath(), lblPoster.getWidth(), lblPoster.getHeight());
             lblPoster.setIcon(poster);
         } catch (Exception e) {
-            //set CORRUPTED DATA image
+            ImageIcon poster = IconUtils.createIcon(getClass().getResource(CORRUPTED_ICON), lblPoster.getWidth(), lblPoster.getHeight());
+            lblPoster.setIcon(poster);
         }
         
     }
@@ -593,4 +617,9 @@ public class MoviesPanel extends javax.swing.JPanel {
             Logger.getLogger(MoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
         }
+
+    private void initPoster() throws IOException {
+        ImageIcon poster = IconUtils.createIcon(getClass().getResource(DEFAULT_POSTER_PATH), lblPoster.getWidth(), lblPoster.getHeight());
+        lblPoster.setIcon(poster);
+    }
 }

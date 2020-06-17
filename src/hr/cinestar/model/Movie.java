@@ -6,15 +6,24 @@
 package hr.cinestar.model;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessOrder;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorOrder;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author Josip
  */
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlAccessorOrder(XmlAccessOrder.UNDEFINED)
+@XmlRootElement(name = "movie")
 public class Movie {
     private int id;
     private String title;
@@ -51,6 +60,7 @@ public class Movie {
         this.genres = genres;
     }
 
+    @XmlAttribute(name = "id")
     public int getId() {
         return id;
     }
@@ -59,6 +69,7 @@ public class Movie {
         this.id = id;
     }
     
+    @XmlElement(name = "title")
     public String getTitle() {
         return title;
     }
@@ -70,11 +81,17 @@ public class Movie {
     public Date getBeginningDate() {
         return beginningDate;
     }
+    
+    @XmlElement (name = "beginningDate")
+    public String getDateString(){
+        return beginningDate.toString();
+    }
 
     public void setBeginningDate(Date beginningDate) {
         this.beginningDate = beginningDate;
     }
 
+    @XmlElement (name = "description")
     public String getDescription() {
         return description;
     }
@@ -83,6 +100,7 @@ public class Movie {
         this.description = description;
     }
 
+    @XmlElement (name = "originalTitle")
     public String getOriginalTitle() {
         return originalTitle;
     }
@@ -98,7 +116,7 @@ public class Movie {
     public void setGenres(List<Genre> genre) {
         this.genres = genre;
     }
-
+    
     public String getPosterPath() {
         return posterPath;
     }
@@ -107,6 +125,7 @@ public class Movie {
         this.posterPath = posterPath;
     }
 
+    @XmlElement (name = "link")
     public String getLink() {
         return link;
     }
@@ -114,7 +133,7 @@ public class Movie {
     public void setLink(String link) {
         this.link = link;
     }
-
+    
     public List<Person> getDirectors() {
         return directors;
     }
@@ -122,7 +141,7 @@ public class Movie {
     public void setDirectors(List<Person> directors) {
         this.directors = directors;
     }
-
+    
     public List<Person> getActors() {
         return actors;
     }
@@ -149,9 +168,18 @@ public class Movie {
         return Objects.hash(title);
     }
     
+    @XmlElement (name = "actors")
+    public Actors getActorsForXml(){
+        return new Actors(actors);
+    }
     
+    @XmlElement (name = "directors")
+    public Directors getDirectorsForXml(){
+        return new Directors(directors);
+    }
     
-    
-    
-    
+    @XmlElement (name = "genres")
+    public Genres getGenresForXml(){
+        return new Genres(genres);
+    }
 }

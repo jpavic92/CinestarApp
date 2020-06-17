@@ -563,9 +563,9 @@ public class SqlRepository implements Repository {
         //put persons into HashMap for more efficient search
         HashMap<Integer, Person> hmPersons = new HashMap<>();
         
-        for (Person person : persons) {
+        persons.forEach((person) -> {
             hmPersons.put(Objects.hash(person.getFirstName(), person.getLastName()), person);
-        }
+        });
         
         try (CallableStatement stmt = con.prepareCall(CREATE_MOVIE_INVOLVEMENT)) {
                 int personId;

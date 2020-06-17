@@ -6,17 +6,22 @@
 package hr.algebra.gui;
 
 import hr.algebra.utils.FileUtils;
+import hr.algebra.utils.XmlUtils;
 import hr.cinestar.dal.Repository;
 import hr.cinestar.dal.RepositoryFactory;
 import hr.cinestar.model.CinestarParser;
+import hr.cinestar.model.Movie;
+import hr.cinestar.model.Movies;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -26,6 +31,8 @@ import javax.xml.stream.XMLStreamException;
 public class AdminFrame extends javax.swing.JFrame {
     
     private static final String DIR = "assets";
+    private static final String XML_DIR = "exports";
+    private static final String XML_FILE = "cinestarMovies.xml";
     private static final Color GREEN = new Color(0, 193, 58);
     
     private Repository repo;
@@ -82,6 +89,11 @@ public class AdminFrame extends javax.swing.JFrame {
         });
 
         btnExport.setText("Export to XML");
+        btnExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExportActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
@@ -159,30 +171,57 @@ public class AdminFrame extends javax.swing.JFrame {
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
-            setStatus("Deleting data...", Color.yellow);
-            repo.deleteAllData();
-            File dir = new File(DIR);
-            FileUtils.cleanDirectory(dir.getAbsolutePath());
-            setStatus("All data has been successfully deleted!", GREEN);
+            if (repo.selectMovies().isEmpty()) {
+                setStatus("No data to delete.", Color.RED);
+                return;
+            }
         } catch (Exception ex) {
             Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
-            setStatus("Unable to delete data. Check log for details.", Color.RED);
+            return;
         }
+        
+        setStatus("Deleting data...", Color.yellow);
+        new Thread(() -> {
+            try {
+                repo.deleteAllData();
+                FileUtils.cleanDirectory(new File(DIR).getAbsolutePath());
+                SwingUtilities.invokeLater(() -> {
+                    setStatus("All data has been successfully deleted!", GREEN);
+                });
+                
+            } catch (Exception ex) {
+                Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
+                SwingUtilities.invokeLater(() -> {
+                    setStatus("Unable to delete data. Check log for details.", Color.RED);
+                });
+                
+            }
+        }).start();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
-        try {
-            setStatus("Loading...", Color.yellow);
-            repo.initialEntityCreation(CinestarParser.parsePersons(), CinestarParser.parseGenres(), CinestarParser.parseMovies());
-            setStatus("Data has been successfully uploaded!", GREEN);
-        } catch (IOException | XMLStreamException | ParseException ex) {
-            Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
-            setStatus("Unable to upload data. Check log for details.", Color.RED);
-            
-        } catch (Exception ex) {
-            Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
-            setStatus("Unable to upload data. Check log for details.", Color.RED);
-        }
+        setStatus("Loading...", Color.yellow);
+        new Thread(() ->{
+            try {
+                repo.initialEntityCreation(CinestarParser.parsePersons(), CinestarParser.parseGenres(), CinestarParser.parseMovies());
+                SwingUtilities.invokeLater(() -> {
+                    setStatus("Data has been successfully uploaded!", GREEN);
+                });
+                
+            } catch (IOException | XMLStreamException | ParseException ex) {
+                Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
+                SwingUtilities.invokeLater(() -> {
+                    setStatus("Unable to upload data. Check log for details.", Color.RED);
+                });
+                
+
+            } catch (Exception ex) {
+                Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
+                SwingUtilities.invokeLater(() -> {
+                    setStatus("Unable to upload data. Check log for details.", Color.RED);
+                });
+            }
+        }).start();
        
     }//GEN-LAST:event_btnUploadActionPerformed
 
@@ -194,6 +233,27 @@ public class AdminFrame extends javax.swing.JFrame {
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
         this.dispose();
     }//GEN-LAST:event_miExitActionPerformed
+
+    private void btnExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportActionPerformed
+        try {
+            List<Movie> movies = repo.selectMovies();
+            
+            if (movies.isEmpty()) {
+                setStatus("No data to export.", Color.RED);
+                return;
+            }
+            
+            File selectedFolder = FileUtils.saveFile();
+            if (selectedFolder != null) {
+                String destinationPath = selectedFolder.getAbsolutePath() + File.separator + XML_FILE;
+                XmlUtils.marshalToFile(new Movies(movies), destinationPath);
+                setStatus("Data has been successfuly exported", GREEN);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(AdminFrame.class.getName()).log(Level.SEVERE, null, ex);
+            setStatus("Unable to export data. Check log for details.", Color.RED);
+        }
+    }//GEN-LAST:event_btnExportActionPerformed
 
     /**
      * @param args the command line arguments

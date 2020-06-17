@@ -6,6 +6,8 @@
 package hr.cinestar.model;
 
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
@@ -29,6 +31,7 @@ public class Person {
         this.lastName = lastName;
     }
 
+    @XmlAttribute (name = "id")
     public int getId() {
         return id;
     }
@@ -37,6 +40,7 @@ public class Person {
         this.id = id;
     }
 
+    @XmlElement(name = "firstName")
     public String getFirstName() {
         return firstName;
     }
@@ -45,6 +49,7 @@ public class Person {
         this.firstName = firstName;
     }
 
+    @XmlElement (name = "lastName")
     public String getLastName() {
         return lastName;
     }
