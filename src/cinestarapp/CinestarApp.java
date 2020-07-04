@@ -8,7 +8,7 @@ package cinestarapp;
 import hr.algebra.utils.FileUtils;
 import hr.cinestar.dal.Repository;
 import hr.cinestar.dal.RepositoryFactory;
-import hr.cinestar.model.CinestarParser;
+import hr.algebra.parsers.CinestarParser;
 import hr.cinestar.model.Genre;
 import hr.cinestar.model.Movie;
 import hr.cinestar.model.Person;

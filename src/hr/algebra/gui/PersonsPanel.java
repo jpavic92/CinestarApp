@@ -560,7 +560,7 @@ public class PersonsPanel extends javax.swing.JPanel {
         repo.createPersonsInvolvements(personId, moviesDirected, moviesActed);
     }
 
-    private void clearForm() {
+    void clearForm() {
         tfFirstName.setText("");
         tfLastName.setText("");
         moviesActed.clear();

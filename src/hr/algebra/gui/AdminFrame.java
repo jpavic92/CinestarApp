@@ -9,7 +9,7 @@ import hr.algebra.utils.FileUtils;
 import hr.algebra.utils.XmlUtils;
 import hr.cinestar.dal.Repository;
 import hr.cinestar.dal.RepositoryFactory;
-import hr.cinestar.model.CinestarParser;
+import hr.algebra.parsers.CinestarParser;
 import hr.cinestar.model.Movie;
 import hr.cinestar.model.Movies;
 import java.awt.Color;

@@ -6,9 +6,8 @@
 package hr.algebra.gui;
 
 import hr.algebra.utils.MessageUtils;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.util.Arrays;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,8 +18,7 @@ public class UserFrame extends javax.swing.JFrame{
     
     private MoviesPanel mp;
     private PersonsPanel pp;
-    private SignInPanel sip;
-    private static final Dimension MOVIE_PANEL_DIM = new Dimension(1050, 900);
+    private static final Dimension MOVIE_PANEL_DIM = new Dimension(1000, 880);
     private static final Dimension PERSONS_PANEL_DIM = new Dimension(730, 600);
 
     /**
@@ -47,10 +45,12 @@ public class UserFrame extends javax.swing.JFrame{
         jMenu4 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        miClear = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMenu3.setText("File");
+        jMenu3.setText("Application");
 
         miSignOut.setText("Sign out");
         miSignOut.addActionListener(new java.awt.event.ActionListener() {
@@ -89,6 +89,18 @@ public class UserFrame extends javax.swing.JFrame{
         jMenu4.add(jMenuItem3);
 
         jMenuBar2.add(jMenu4);
+
+        jMenu1.setText("Form");
+
+        miClear.setText("Clear");
+        miClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miClearActionPerformed(evt);
+            }
+        });
+        jMenu1.add(miClear);
+
+        jMenuBar2.add(jMenu1);
 
         setJMenuBar(jMenuBar2);
 
@@ -133,6 +145,16 @@ public class UserFrame extends javax.swing.JFrame{
         }
     }//GEN-LAST:event_miSignOutActionPerformed
 
+    private void miClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miClearActionPerformed
+        if (mp.isVisible()) {
+            mp.clearForm();
+        }
+        else if (pp.isVisible()) {
+            pp.clearForm();
+        }
+        
+    }//GEN-LAST:event_miClearActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -172,11 +194,13 @@ public class UserFrame extends javax.swing.JFrame{
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar2;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem miClear;
     private javax.swing.JMenuItem miExit;
     private javax.swing.JMenuItem miSignOut;
     // End of variables declaration//GEN-END:variables

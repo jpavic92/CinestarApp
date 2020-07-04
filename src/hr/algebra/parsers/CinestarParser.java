@@ -3,11 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hr.cinestar.model;
+package hr.algebra.parsers;
 
 import hr.algebra.factory.ParserFactory;
 import hr.algebra.factory.UrlConnectionFactory;
 import hr.algebra.utils.FileUtils;
+import hr.cinestar.model.Genre;
+import hr.cinestar.model.Movie;
+import hr.cinestar.model.Person;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -42,12 +45,7 @@ public class CinestarParser {
     private static final String PROTOCOL = "https";
     private static final Random RANDOM = new Random();
     
-   
     
-    
-
-    //USPOSTAVITI URL CONNECTION
-    //NAPRAVITI READER
     public static Set<Person> parsePersons() throws IOException, XMLStreamException {
         Set<Person> persons = new HashSet<>();
         XMLEventReader reader = getEventReader();

@@ -31,7 +31,7 @@ import javax.sql.DataSource;
  */
 public class SqlRepository implements Repository {
 
-    //SQL table column names
+
     private static final String MOVIE_ID = "IDMovie";
     private static final String MOVIE_TITLE = "Title";
     private static final String MOVIE_DESCRIPTION = "Description";
@@ -52,9 +52,6 @@ public class SqlRepository implements Repository {
     private static final String USER_ROLEID = "UserRoleId";
     
     
-
-    //SQL procedures calls
-    //Movie
     private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
